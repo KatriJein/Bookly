@@ -1,0 +1,117 @@
+@use 'sass:math';
+
+$default-min-bp: 1024px;
+$default-max-bp: 1920px;
+
+@function round($number, $decimals: 0) {
+    $n: 1;
+    @if $decimals > 0 {
+        @for $i from 1 through $decimals {
+            $n: $n * 10;
+        }
+    }
+    @return math.div(math.round($number * $n), $n);
+}
+
+@function px-to-rem($px) {
+    $rems: math.div($px, 16px) * 1rem;
+    @return $rems;
+}
+
+@function fluid(
+    $min-size,
+    $max-size,
+    $min-breakpoint: $default-min-bp,
+    $max-breakpoint: $default-max-bp,
+    $unit: vw
+) {
+    $slope: math.div($max-size - $min-size, $max-breakpoint - $min-breakpoint);
+    $slope-to-unit: round($slope * 100, 2);
+    $intercept-rem: round(px-to-rem($min-size - $slope * $min-breakpoint), 2);
+    $min-size-rem: round(px-to-rem($min-size), 2);
+    $max-size-rem: round(px-to-rem($max-size), 2);
+    @return clamp(
+        #{$min-size-rem},
+        #{$slope-to-unit}#{$unit} + #{$intercept-rem},
+        #{$max-size-rem}
+    );
+}
+
+@function fluid-px(
+    $min-size,
+    $max-size,
+    $min-breakpoint: 375px,
+    $max-breakpoint: 1920px,
+    $unit: vw
+) {
+    $slope: math.div($max-size - $min-size, $max-breakpoint - $min-breakpoint);
+    $slope-to-unit: round($slope * 100, 2);
+    $intercept: round($min-size - $slope * $min-breakpoint, 2);
+    $min-size-px: round($min-size, 2);
+    $max-size-px: round($max-size, 2);
+
+    @return clamp(
+        #{$min-size-px},
+        calc(#{$slope-to-unit}#{$unit} + #{$intercept}px),
+        #{$max-size-px}
+    );
+}
+
+@font-face {
+    font-family: 'Onder';
+    src: url('./assets/fonts/Onder.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Nauryz';
+    src: url('./assets/fonts/NAURYZREDKEDS.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Stolzl';
+    src: url('./assets/fonts/stolzl_regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Stolzl';
+    src: url('./assets/fonts/stolzl_book.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    --dark-blue: #1a1a2e;
+    --blue: #0f3460;
+    --pink: #e94560;
+    --main-blue: #1372f2;
+    --star-yellow: #ff9f1c;
+
+    --font-size-16: #{fluid(14px, 16px)};
+    --font-size-18: #{fluid(16px, 18px)};
+    --font-size-20: #{fluid(18px, 20px)};
+    --font-size-26: #{fluid(20px, 26px)};
+    --font-size-28: #{fluid(22px, 28px)};
+    --font-size-36: #{fluid(28px, 36px)};
+    --font-size-96: #{fluid(68px, 96px)};
+}
+
+:root {
+    font-family: 'Stolzl', Arial, sans-serif;
+    line-height: 1;
+    font-weight: 400;
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
