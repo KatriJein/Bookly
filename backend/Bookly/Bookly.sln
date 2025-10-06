@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookly", "Bookly\Bookly.csproj", "{234854DA-51E5-4694-AC23-DB88D50839CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker-compose", "Docker-compose", "{01878AC5-F6F9-415B-B851-B82999605B2B}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
