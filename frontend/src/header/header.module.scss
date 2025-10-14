@@ -1,0 +1,27 @@
+.header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--dark-blue);
+    padding: var(--40px) var(--80px);
+    font-size: var(--font-size-18);
+    color: white;
+    font-weight: 300;
+    z-index: 2;
+
+    .logo {
+        width: var(--80px);
+    }
+
+    .nav {
+        display: flex;
+        gap: var(--80px);
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
