@@ -82,7 +82,7 @@ $default-max-bp: 1920px;
     font-family: 'Stolzl';
     src: url('./assets/fonts/stolzl_book.otf') format('opentype');
     font-weight: 300;
-    font-style: normal;
+    font-style: light;
 }
 
 * {
@@ -103,15 +103,33 @@ $default-max-bp: 1920px;
     --font-size-28: #{fluid(22px, 28px)};
     --font-size-36: #{fluid(28px, 36px)};
     --font-size-96: #{fluid(68px, 96px)};
+
+    --border-radius: #{fluid(26px, 40px)};
+    --100px: 5.2vw;
+    --80px: 4.15vw;
+    --40px: 2vw;
+    --32px: 1.6vw;
+    --20px: 1.05vw;
+
 }
 
 :root {
     font-family: 'Stolzl', Arial, sans-serif;
     line-height: 1;
     font-weight: 400;
+    color: black;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    .button {
+        cursor: pointer;
+        border: none;
+        background: none;
+        border-radius: var(--border-radius);
+    }
 }
