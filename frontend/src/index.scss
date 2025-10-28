@@ -105,11 +105,17 @@ $default-max-bp: 1920px;
     --font-size-96: #{fluid(68px, 96px)};
 
     --border-radius: #{fluid(26px, 40px)};
+    --border-radius-8: #{fluid(4px, 16px)};
     --100px: 5.2vw;
     --80px: 4.15vw;
+    --60px: 3.125vw;
     --40px: 2vw;
     --32px: 1.6vw;
+    --28px: 1.46vw;
     --20px: 1.05vw;
+    --16px: 0.9vw;
+    --12px: 0.625vw;
+
 
 }
 
@@ -131,5 +137,7 @@ body {
         border: none;
         background: none;
         border-radius: var(--border-radius);
+        font-weight: 300;
+        font-family: 'Stolzl';
     }
 }

@@ -1,0 +1,23 @@
+.books {
+    display: flex;
+    flex-direction: column;
+    gap: var(--40px);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .title {
+        font-size: var(--font-size-36);
+        font-family: 'Nauryz';
+    }
+}
+
+.list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--28px);
+    text-decoration: none;
+}
