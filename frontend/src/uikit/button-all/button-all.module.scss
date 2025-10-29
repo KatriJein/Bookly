@@ -1,0 +1,35 @@
+.button {
+    font-size: var(--font-size-16);
+    font-family: 'Stolzl';
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: var(--20px);
+    color: black;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+     span {
+        transition: all 0.3s ease;
+    }
+
+    img {
+        transition: all 0.3s ease;
+    }
+
+     &:hover {        
+        img {
+            transform: translateX(4px);
+        }
+        
+        span {
+            transform: scale(1.05);
+        }
+    }
+
+    &:active {
+        transform: scale(0.98);
+    }
+}
