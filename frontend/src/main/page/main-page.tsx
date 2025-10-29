@@ -5,6 +5,8 @@ import styles from './main-page.module.scss';
 import { CollectionsList } from '../../collections';
 import { BooksList } from '../../books/books-list';
 import { Footer } from '../../footer';
+import { Search } from '../../search';
+// import { RatingButton } from '../../uikit/search/drop-down-list/rating-button';
 
 export function MainPage() {
     return (
@@ -15,6 +17,8 @@ export function MainPage() {
             <Header />
             <MainBanner />
             <div className={styles.content}>
+                <Search />
+                {/* <RatingButton /> */}
                 <CollectionsList title='Популярные подборки' />
                 <BooksList title='Вам может понравиться' />
                 <BooksList title='Книги в ваших интересах' />
