@@ -1,0 +1,48 @@
+.menu {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    list-style: none;
+    color: black;
+    font-size: var(--font-size-16);
+    font-weight: 300;
+    background-color: white;
+    border: 1px solid #b8b8b8;
+    border-radius: 12px;
+    border-top-right-radius: 0;
+    
+
+    .item {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s ease-in-out;
+
+        span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: inherit;
+        }
+
+        .icon {
+            transition: inherit;
+        }
+
+        &:hover {
+            color: var(--pink);
+            transform: scale(1.02);
+
+            span {
+                color: inherit;
+            }
+
+            .icon {
+                color: inherit;
+                transform: scale(1.05);
+            }
+        }
+    }
+}

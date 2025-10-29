@@ -34,17 +34,28 @@
         align-items: center;
         transition: all 0.3s ease;
 
+        .stroke {
+            stroke: #909090;
+            transition: all 0.3s ease;
+        }
+
         &:hover {
             transform: scale(1.05);
 
             .icon {
                 transform: scale(1.05);
+                color: var(--pink);
+            }
+
+            .stroke {
+                stroke: var(--pink);
             }
         }
 
         .icon {
             width: 38px;
             height: 38px;
+            color: white;
             transition: all 0.3s ease;
         }
     }
@@ -117,6 +128,34 @@
 
     .tag:not(:last-child) {
         flex-shrink: 0;
+    }
+
+    .more {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: flex-end;
+        gap: var(--20px);
+        position: relative;
+    }
+
+    .popup {
+        position: absolute;
+        top: 95%;
+        right: 13px;
+        z-index: 1;
+        animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .menu {
