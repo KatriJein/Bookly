@@ -1,15 +1,39 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Reflection;
+using Bookly.Extensions;
+using Bookly.Infrastructure;
+using Core.Options;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
 
-builder.Services.AddOpenApi();
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.Configure<BooklyOptions>(builder.Configuration);
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
+builder.Services.AddBooklyDbContext(builder.Configuration);
+builder.Services.AddControllers();
 builder.Services.AddHealthChecks();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(setup =>
+{
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    setup.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+});
+builder.Services.AddServices();
+builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.MapHealthChecks("/health");
+app.MapControllers();
+
+using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<BooklyDbContext>();
+await dbContext.Database.MigrateAsync();
 
 app.Run();
