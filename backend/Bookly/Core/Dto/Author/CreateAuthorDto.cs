@@ -1,3 +1,3 @@
 namespace Core.Dto.Author;
 
-public record CreateAuthorDto(string FullName, string DisplayName);
+public record CreateAuthorDto(string Name, string DisplayName);

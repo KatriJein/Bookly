@@ -11,7 +11,7 @@ public class GetAllAuthorsHandler(BooklyDbContext booklyDbContext) : IRequestHan
     {
         var authors = await booklyDbContext.Authors.ToListAsync(cancellationToken);
         var mappedAuthors = authors
-            .Select(a => new GetAuthorDto(a.Id, a.FullName, a.DisplayName))
+            .Select(a => new GetAuthorDto(a.Id, a.Name, a.DisplayName))
             .ToList();
         return mappedAuthors;
     }

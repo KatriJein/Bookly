@@ -43,7 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Application\Handlers\Books\" />
       <Folder Include="Application\Mappers\" />
     </ItemGroup>
 

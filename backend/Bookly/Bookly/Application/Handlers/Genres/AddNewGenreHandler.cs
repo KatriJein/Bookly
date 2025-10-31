@@ -13,7 +13,7 @@ public class AddNewGenreHandler(BooklyDbContext booklyDbContext, ILogger logger)
     public async Task<Result<Genre>> Handle(AddNewGenreCommand request, CancellationToken cancellationToken)
     {
         var genre = await 
-            booklyDbContext.Genres.FirstOrDefaultAsync(g => g.Name == request.CreateGenreDto.Name, cancellationToken);
+            booklyDbContext.Genres.FirstOrDefaultAsync(g => g.Name.ToLower() == request.CreateGenreDto.Name.ToLower(), cancellationToken);
         if (genre != null)
         {
             logger.Information("Жанр {@genre} уже существует. Пропуск процедуры создания жанра", request.CreateGenreDto.Name);
