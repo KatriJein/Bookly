@@ -1,4 +1,5 @@
 using Bookly.Application.Services;
+using Bookly.Application.Services.Files;
 using Bookly.Infrastructure;
 using Core.Options;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ public static class ServiceCollectionExtensions
     
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddScoped<IFilesService, CloudStorageFilesService>();
         services.AddHostedService<GenresSeedService>();
         return services;
     }

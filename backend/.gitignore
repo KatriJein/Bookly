@@ -4,6 +4,9 @@
 [Ll]og/
 [Ll]ogs/
 
+config
+credentials
+
 # Rider / IntelliJ specific
 .idea/
 *.sln.iml

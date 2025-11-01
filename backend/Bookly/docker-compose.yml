@@ -4,10 +4,15 @@ services:
   bookly_main:
     image: docker.io/wcored/booklymain:latest
     container_name: BooklyMain
+    env_file:
+      - "./.env"
     ports:
       - "8082:8080"
     networks:
       - bookly_network
+    volumes:
+      - ./credentials:/home/app/.aws/credentials
+      - ./config:/home/app/.aws/config
     depends_on:
       bookly_postgres:
           condition: service_healthy
