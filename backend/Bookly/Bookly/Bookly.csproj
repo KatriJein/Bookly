@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
         <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9"/>
@@ -40,10 +41,6 @@
       <ProjectReference Include="..\Bookly.Domain\Bookly.Domain.csproj" />
       <ProjectReference Include="..\Bookly.Infrastructure\Bookly.Infrastructure.csproj" />
       <ProjectReference Include="..\Core\Core.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Application\Mappers\" />
     </ItemGroup>
 
 </Project>
