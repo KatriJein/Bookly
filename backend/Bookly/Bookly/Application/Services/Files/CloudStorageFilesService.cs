@@ -2,17 +2,18 @@ using System.Net;
 using Amazon.S3;
 using Amazon.S3.Model;
 using Core;
+using Core.Dto.File;
 using Core.Options;
 using Microsoft.Extensions.Options;
 using ILogger = Serilog.ILogger;
 
 namespace Bookly.Application.Services.Files;
 
-public class CloudStorageFilesService(IOptionsSnapshot<BooklyOptions> booklyOptions) : IFilesService
+public class CloudStorageFilesService(IOptionsSnapshot<BooklyOptions> booklyOptions, ILogger logger) : IFilesService
 {
     private readonly IAmazonS3 _client = new AmazonS3Client(new AmazonS3Config() {ServiceURL = booklyOptions.Value.BucketServiceUrl});
     
-    public async Task<Result<string>> UploadFileAsync(IFormFile file)
+    public async Task<Result<UploadedFileDto>> UploadFileAsync(IFormFile file)
     {
         await _client.EnsureBucketExistsAsync(booklyOptions.Value.BooklyFilesStorageBucketName);
         var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}_{DateTime.UtcNow:yyyyMMddHHmmssfff}{Path.GetExtension(file.FileName)}";
@@ -27,7 +28,10 @@ public class CloudStorageFilesService(IOptionsSnapshot<BooklyOptions> booklyOpti
             InputStream = stream
         };
         await _client.PutObjectAsync(putObjectRequest);
-        return await GetPresignedUrlAsync(booklyOptions.Value.BooklyFilesStorageBucketName, fileName);
+        var presignedUrl = await GetPresignedUrlAsync(booklyOptions.Value.BooklyFilesStorageBucketName, fileName);
+        return presignedUrl.IsFailure ?
+            Result<UploadedFileDto>.Failure(presignedUrl.Error)
+            : Result<UploadedFileDto>.Success(new UploadedFileDto(fileName, presignedUrl.Value));
     }
 
     public async Task<Result<string>> GetPresignedUrlAsync(string bucketName, string key)
@@ -39,8 +43,8 @@ public class CloudStorageFilesService(IOptionsSnapshot<BooklyOptions> booklyOpti
             Key = key
         };
         var presignedUrl = await _client.GetPreSignedURLAsync(getPresignedUrlRequest);
-        return presignedUrl == null 
-            ? Result<string>.Failure("Не удалось получить ссылку на аватарку")
-            : Result<string>.Success(presignedUrl);
+        if (presignedUrl is not null) return Result<string>.Success(presignedUrl);
+        logger.Error("Не удалось получить ссылку для объекта {@objectKey}", key);
+        return Result<string>.Failure("Не удалось получить ссылку для объекта");
     }
 }

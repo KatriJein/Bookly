@@ -1,9 +1,10 @@
 using Core;
+using Core.Dto.File;
 
 namespace Bookly.Application.Services.Files;
 
 public interface IFilesService
 {
-    Task<Result<string>> UploadFileAsync(IFormFile file);
+    Task<Result<UploadedFileDto>> UploadFileAsync(IFormFile file);
     Task<Result<string>> GetPresignedUrlAsync(string bucketName, string key);
 }

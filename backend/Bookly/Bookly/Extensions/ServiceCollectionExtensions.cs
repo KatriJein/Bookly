@@ -1,5 +1,8 @@
+using Bookly.Application.Chains.LoginChain;
+using Bookly.Application.Chains.LoginChain.Handlers;
 using Bookly.Application.Services;
 using Bookly.Application.Services.Files;
+using Bookly.Application.Services.Passwords;
 using Bookly.Infrastructure;
 using Core.Options;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +25,16 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<IFilesService, CloudStorageFilesService>();
         services.AddHostedService<GenresSeedService>();
+        services.AddScoped<IPasswordHasher, PasswordHasher>();
+        services.AddLoginChain();
+        return services;
+    }
+
+    private static IServiceCollection AddLoginChain(this IServiceCollection services)
+    {
+        services.AddScoped<LoginAsEmailHandler>();
+        services.AddScoped<LoginAsUsernameHandler>();
+        services.AddScoped<ILoginChain, LoginChain>();
         return services;
     }
 }
