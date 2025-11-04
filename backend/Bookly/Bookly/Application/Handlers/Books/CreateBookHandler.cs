@@ -1,11 +1,13 @@
 using Bookly.Application.Handlers.Authors;
 using Bookly.Application.Handlers.Genres;
+using Bookly.Application.Handlers.Publishers;
 using Bookly.Domain.Models;
 using Bookly.Infrastructure;
 using Core;
 using Core.Dto.Author;
 using Core.Dto.Book;
 using Core.Dto.Genre;
+using Core.Dto.Publisher;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using ILogger = Serilog.ILogger;
@@ -23,6 +25,14 @@ public class CreateBookHandler(IMediator mediator, BooklyDbContext booklyDbConte
                 request.CreateBookDto.ExternalId);
             return Result<Guid>.Success(existingBook.Id);
         }
+
+        var publisherName = request.CreateBookDto.Publisher.Trim();
+        var publisher = await GetPublisherAsync(publisherName);
+        if (publisher is null)
+        {
+            logger.Error("Не удалось получить или создать издателя {@publisherName}. Книга не может быть создана", publisherName);
+            return Result<Guid>.Failure("Ошибка модели издателя");
+        }
         var genres = request.CreateBookDto.Genres.Select(g => g.Trim());
         var authors = request.CreateBookDto.Authors.Select(a => a.Trim());
         var genresModels = await GetGenresAsync(genres);
@@ -36,6 +46,7 @@ public class CreateBookHandler(IMediator mediator, BooklyDbContext booklyDbConte
         }
         book.Value.AddGenres(genresModels);
         book.Value.AddAuthors(authorModels);
+        book.Value.SetPublisher(publisher);
         var savedBook = await booklyDbContext.Books.AddAsync(book.Value, cancellationToken);
         await booklyDbContext.SaveChangesAsync(cancellationToken);
         return Result<Guid>.Success(savedBook.Entity.Id);
@@ -53,6 +64,12 @@ public class CreateBookHandler(IMediator mediator, BooklyDbContext booklyDbConte
         return await GetValuesAsync(authors,
             async author => await mediator.Send(new GetAuthorQuery(author)),
             async author => await mediator.Send(new CreateAuthorCommand(new CreateAuthorDto(author, author))));
+    }
+
+    private async Task<Publisher?> GetPublisherAsync(string publisher)
+    {
+        var publisherModel = await mediator.Send(new AddNewPublisherCommand(new CreatePublisherDto(publisher)));
+        return publisherModel.IsFailure ? null : publisherModel.Value;
     }
     
     private async Task<IEnumerable<TOut>> GetValuesAsync<TOut, TIn>(IEnumerable<TIn> values, Func<TIn,

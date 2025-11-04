@@ -11,18 +11,18 @@ public class Book : Entity<Guid>
     public double Rating { get; private set; }
     public int RatingsCount { get; private set; }
     public string Language { get; private set; }
-    public string? Publisher { get; private set; }
     public int? PublishmentYear { get; private set; }
     public int PageCount { get; private set; }
     public AgeRestriction AgeRestriction { get; private set; }
     public string? Thumbnail { get; private set; }
     public string ExternalId { get; private set; }
-    
+    public Guid PublisherId { get; private set; }
     public DateTime CreatedAt { get; private set; }
-
+    
     private List<Genre> _genres = [];
     private List<Author> _authors = [];
-    
+
+    public Publisher Publisher { get; private set; }
     public IReadOnlyCollection<Genre> Genres => _genres;
     public IReadOnlyCollection<Author> Authors => _authors;
 
@@ -39,7 +39,6 @@ public class Book : Entity<Guid>
         if (results.Any(r => r.IsFailure))
             return Result<Book>.Failure(results.First(r => r.IsFailure).Error);
         book.Description = createBookDto.Description;
-        book.Publisher = createBookDto.Publisher;
         book.AgeRestriction = createBookDto.AgeRestriction;
         book.Thumbnail = createBookDto.Thumbnail;
         book.CreatedAt = DateTime.UtcNow;
@@ -116,5 +115,10 @@ public class Book : Entity<Guid>
     {
         foreach (var author in authors)
             _authors.Remove(author);
+    }
+
+    public void SetPublisher(Publisher publisher)
+    {
+        Publisher = publisher;
     }
 }

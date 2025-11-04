@@ -6,6 +6,7 @@ using Core;
 using Core.Dto.File;
 using Core.Dto.User;
 using Core.Options;
+using Google.Apis.Books.v1;
 using MediatR;
 using Microsoft.Extensions.Options;
 

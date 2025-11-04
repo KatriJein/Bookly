@@ -5,6 +5,7 @@ using Bookly.Tests.Utils;
 using Core.Dto.Author;
 using Core.Dto.Book;
 using Core.Dto.Genre;
+using Core.Dto.Publisher;
 using Core.Enums;
 
 namespace Bookly.Tests.Application.Handlers.Books;
@@ -33,20 +34,26 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var genre1 = Genre.Create(new CreateGenreDto("Фантастика", "Фантастика")).Value;
             var genre2 = Genre.Create(new CreateGenreDto("Роман", "Роман")).Value;
 
-            var b1 = Book.Create(new CreateBookDto("Онегин", "desc", 4.1, 300, "ru", "Изд", 1833, 400, AgeRestriction.Everyone, null, "1",
-                Array.Empty<string>(), Array.Empty<string>())).Value;
+            var pub1 = Publisher.Create(new CreatePublisherDto("Издательство 1")).Value;
+            var pub2 = Publisher.Create(new CreatePublisherDto("Издательство 2")).Value;
+
+            var b1 = Book.Create(new CreateBookDto("Онегин", "desc", 4.1, 300, "ru", "Издательство 1", 1833, 400,
+                AgeRestriction.Everyone, null, "1", Array.Empty<string>(), Array.Empty<string>())).Value;
             b1.AddAuthors(new[] { author1 });
             b1.AddGenres(new[] { genre2 });
+            b1.SetPublisher(pub1);
 
-            var b2 = Book.Create(new CreateBookDto("Война и мир", "desc", 4.8, 5000, "ru", "Изд", 1869, 1300, AgeRestriction.Everyone, null, "2",
-                Array.Empty<string>(), Array.Empty<string>())).Value;
+            var b2 = Book.Create(new CreateBookDto("Война и мир", "desc", 4.8, 5000, "ru", "Издательство 2", 1869, 1300,
+                AgeRestriction.Everyone, null, "2", Array.Empty<string>(), Array.Empty<string>())).Value;
             b2.AddAuthors(new[] { author2 });
             b2.AddGenres(new[] { genre2 });
+            b2.SetPublisher(pub2);
 
-            var b3 = Book.Create(new CreateBookDto("Будущее", "desc", 3.0, 100, "ru", "Изд", 2020, 250, AgeRestriction.Teen, null, "3",
-                Array.Empty<string>(), Array.Empty<string>())).Value;
+            var b3 = Book.Create(new CreateBookDto("Будущее", "desc", 3.0, 100, "ru", "Издательство 1", 2020, 250,
+                AgeRestriction.Teen, null, "3", Array.Empty<string>(), Array.Empty<string>())).Value;
             b3.AddAuthors(new[] { author1 });
             b3.AddGenres(new[] { genre1 });
+            b3.SetPublisher(pub1);
 
             _db.Books.AddRange(b1, b2, b3);
             await _db.SaveChangesAsync();
@@ -75,6 +82,18 @@ namespace Bookly.Tests.Application.Handlers.Books;
 
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result.First().Title.ToLower(), Does.Contain("война"));
+        }
+        
+        [Test]
+        public async Task Handle_FiltersByPublisher()
+        {
+            await SeedBooksAsync();
+            var settings = new BookSearchSettingsDto(SearchByPublisher: "издательство 1");
+            var handler = new GetAllBooksHandler(_db);
+
+            var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
+
+            Assert.That(result, Has.Count.EqualTo(2));
         }
 
         [Test]
@@ -126,6 +145,23 @@ namespace Bookly.Tests.Application.Handlers.Books;
             Assert.That(result.First().Title.ToLower(), Does.Contain("война"));
             Assert.That(result.First().Authors.Contains("Лев Толстой"));
         }
+        
+        [Test]
+        public async Task Handle_FiltersByPublisherAndGenre()
+        {
+            await SeedBooksAsync();
+            var settings = new BookSearchSettingsDto(
+                SearchByPublisher: "издательство 1",
+                SearchByGenres: new[] { "Фантастика" }
+            );
+
+            var handler = new GetAllBooksHandler(_db);
+            var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
+
+            Assert.That(result, Has.Count.EqualTo(1));
+            var book = result.First();
+            Assert.That(book.Genres.Contains("Фантастика"));
+        }
 
         [Test]
         public async Task Handle_SortsByTitleDescending()
@@ -153,7 +189,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var sorted = ratings.OrderBy(r => r).ToList();
             Assert.That(ratings, Is.EqualTo(sorted));
         }
-
+        
         [Test]
         public async Task Handle_PaginatesProperly()
         {

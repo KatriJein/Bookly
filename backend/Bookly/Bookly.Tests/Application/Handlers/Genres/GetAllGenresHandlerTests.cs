@@ -41,8 +41,8 @@ public class GetAllGenresHandlerTests
 
         // Assert
         Assert.That(result, Has.Count.EqualTo(3));
-        Assert.That(result[0].Name, Is.EqualTo("Fiction"));
-        Assert.That(result[1].DisplayName, Is.EqualTo("История"));
+        Assert.That(result[0].Name, Is.EqualTo("History"));
+        Assert.That(result[1].DisplayName, Is.EqualTo("Наука"));
     }
 
     [Test]

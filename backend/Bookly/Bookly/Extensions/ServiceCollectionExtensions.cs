@@ -24,6 +24,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IFilesService, CloudStorageFilesService>();
+        services.AddHostedService<PublishersSeedService>();
         services.AddHostedService<GenresSeedService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddLoginChain();

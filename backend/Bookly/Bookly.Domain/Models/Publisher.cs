@@ -5,7 +5,11 @@ namespace Bookly.Domain.Models;
 
 public class Publisher : Entity<Guid>
 {
+    private List<Book> _books = [];
+    
     public string Name { get; private set; }
+    
+    public IReadOnlyList<Book> Books => _books;
 
     public static Result<Publisher> Create(CreatePublisherDto createPublisherDto)
     {

@@ -1,6 +1,3 @@
 namespace Core.Dto.Publisher;
 
-public class GetPublisherDto
-{
-    
-}
+public record GetPublisherDto(string Name);

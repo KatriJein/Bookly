@@ -9,7 +9,7 @@ public class GetAllAuthorsHandler(BooklyDbContext booklyDbContext) : IRequestHan
 {
     public async Task<List<GetAuthorDto>> Handle(GetAllAuthorsQuery request, CancellationToken cancellationToken)
     {
-        var authors = await booklyDbContext.Authors.ToListAsync(cancellationToken);
+        var authors = await booklyDbContext.Authors.OrderBy(a => a.DisplayName).ToListAsync(cancellationToken);
         var mappedAuthors = authors
             .Select(a => new GetAuthorDto(a.Id, a.Name, a.DisplayName))
             .ToList();

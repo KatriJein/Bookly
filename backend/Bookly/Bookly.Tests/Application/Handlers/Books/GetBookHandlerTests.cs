@@ -5,6 +5,7 @@ using Bookly.Tests.Utils;
 using Core.Dto.Author;
 using Core.Dto.Book;
 using Core.Dto.Genre;
+using Core.Dto.Publisher;
 using Core.Enums;
 
 namespace Bookly.Tests.Application.Handlers.Books;
@@ -31,6 +32,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             var genre = Genre.Create(new CreateGenreDto("Fiction", "Худлит")).Value;
             var author = Author.Create(new CreateAuthorDto("Толстой Л.Н.", "Лев Толстой")).Value;
+            var publisher = Publisher.Create(new CreatePublisherDto("Издательство")).Value;
 
             var bookRes = Book.Create(new CreateBookDto(
                 "Война и мир", "Описание", 4.8, 20000, "ru", "Издательство",
@@ -40,6 +42,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var book = bookRes.Value;
             book.AddAuthors(new[] { author });
             book.AddGenres(new[] { genre });
+            book.SetPublisher(publisher);
 
             _db.Books.Add(book);
             await _db.SaveChangesAsync();
@@ -53,6 +56,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             Assert.That(result.Genres, Is.EquivalentTo(new[] { "Худлит" }));
             Assert.That(result.AgeRestriction, Is.EqualTo("0+"));
             Assert.That(result.Description, Is.EqualTo("Описание"));
+            Assert.That(result.Publisher, Is.EqualTo("Издательство"));
         }
 
         [Test]
@@ -68,7 +72,8 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             var genre = Genre.Create(new CreateGenreDto("History", "История")).Value;
             var author = Author.Create(new CreateAuthorDto("Автор", "Автор")).Value;
-
+            var publisher = Publisher.Create(new CreatePublisherDto("Издательство")).Value;
+            
             var bookRes = Book.Create(new CreateBookDto(
                 "Книга", "desc", 3, 10, "ru", "Изд", 2020, 500,
                 AgeRestriction.Mature, "thumb", "ext2",
@@ -76,6 +81,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var book = bookRes.Value;
             book.AddAuthors(new[] { author });
             book.AddGenres(new[] { genre });
+            book.SetPublisher(publisher);
 
             _db.Books.Add(book);
             await _db.SaveChangesAsync();

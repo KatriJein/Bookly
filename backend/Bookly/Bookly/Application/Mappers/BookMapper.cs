@@ -20,7 +20,7 @@ public static class BookMapper
             book.Rating,
             book.RatingsCount,
             book.Language,
-            book.Publisher,
+            book.Publisher.Name,
             book.PublishmentYear,
             book.PageCount,
             ageRestriction,

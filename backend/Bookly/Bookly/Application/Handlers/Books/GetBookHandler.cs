@@ -14,6 +14,7 @@ public class GetBookHandler(BooklyDbContext booklyDbContext) : IRequestHandler<G
         if (book == null) return null;
         await booklyDbContext.Entry(book).Collection(b => b.Genres).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
+        await booklyDbContext.Entry(book).Reference(b => b.Publisher).LoadAsync(cancellationToken);
         return BookMapper.MapBookToFullDto(book);
     }
 }

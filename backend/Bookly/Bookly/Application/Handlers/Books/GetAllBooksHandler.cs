@@ -16,7 +16,8 @@ public class GetAllBooksHandler(BooklyDbContext booklyDbContext) : IRequestHandl
     {
         var booksWithIncludedInfo = booklyDbContext.Books
             .Include(b => b.Genres)
-            .Include(b => b.Authors);
+            .Include(b => b.Authors)
+            .Include(b => b.Publisher);
         var searchFunctions = CreateSearchFunctionsBasedOnIncomingSearchSettings(request.BookSearchSettingsDto);
         var sortingFunction = CreateSortingFunctionBasedOnIncomingSortingSettings(request.BookSearchSettingsDto);
         var books = await booksWithIncludedInfo
@@ -32,6 +33,7 @@ public class GetAllBooksHandler(BooklyDbContext booklyDbContext) : IRequestHandl
         var functions = new List<ISearchFunction<Book>>
         {
             new ByTitleSearchFunction(bookSearchSettingsDto.SearchByTitle),
+            new ByPublisherSearchFunction(bookSearchSettingsDto.SearchByPublisher),
             new ByAuthorsSearchFunction(bookSearchSettingsDto.SearchByAuthors),
             new ByGenresSearchFunction(bookSearchSettingsDto.SearchByGenres),
             new ByRatingSearchFunction(bookSearchSettingsDto.SearchByRating)
