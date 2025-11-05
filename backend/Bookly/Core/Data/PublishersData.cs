@@ -5,6 +5,7 @@ public static class PublishersData
     public static string[] Publishers =>
     [
         "ЛитРес",
+	    "Проспект",
         "Дрофа",
         "Просвещение",
         "Наука",
@@ -20,6 +21,13 @@ public static class PublishersData
         "Время",
         "Corpus",
         "Astrel",
-        "Eksmo"
+        "Eksmo",
+        "Триумф",
+        "Альпина",
+        "Феникс",
+        "Центрполиграф",
+        "Стрекоза",
+        "Текст",
+        "Альфа"
     ];
 }

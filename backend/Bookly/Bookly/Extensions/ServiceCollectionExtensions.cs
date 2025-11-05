@@ -1,6 +1,8 @@
 using Bookly.Application.Chains.LoginChain;
 using Bookly.Application.Chains.LoginChain.Handlers;
+using Bookly.Application.Hangfire;
 using Bookly.Application.Services;
+using Bookly.Application.Services.ApiScrapers;
 using Bookly.Application.Services.Files;
 using Bookly.Application.Services.Passwords;
 using Bookly.Infrastructure;
@@ -24,6 +26,8 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IFilesService, CloudStorageFilesService>();
+        services.AddScoped<IBooksApiScraperService, BooksApiScraperService>();
+        services.AddHostedService<CreateHangfireJobsService>();
         services.AddHostedService<PublishersSeedService>();
         services.AddHostedService<GenresSeedService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();

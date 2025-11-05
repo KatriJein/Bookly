@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using Bookly.Extensions;
 using Bookly.Infrastructure;
 using Core.Options;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Hellang.Middleware.ProblemDetails;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +29,17 @@ builder.Services.AddSwaggerGen(setup =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     setup.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+builder.Services.AddHangfire(configuration =>
+{
+    var booklyOptions = new BooklyOptions();
+    builder.Configuration.Bind(booklyOptions);
+    configuration
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UsePostgreSqlStorage(o => o.UseNpgsqlConnection(booklyOptions.DbConnectionString));
+});
+builder.Services.AddHangfireServer();
 builder.Services.AddServices();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 var app = builder.Build();
@@ -38,6 +51,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHangfireDashboard();
 app.UseProblemDetails();
 app.MapHealthChecks("/health");
 app.MapControllers();

@@ -13,6 +13,9 @@
         <PackageReference Include="AWSSDK.S3" Version="4.0.9.1" />
         <PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
         <PackageReference Include="Google.Apis.Books.v1" Version="1.68.0.3331" />
+        <PackageReference Include="Hangfire" Version="1.8.21" />
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.21" />
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12" />
         <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
         <PackageReference Include="MediatR" Version="10.0.1" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />

@@ -17,4 +17,14 @@ public static class EnumMapper
             _ => throw new NotImplementedException("Неизвестное значение AgeRestriction")
         };
     }
+
+    public static AgeRestriction MapStringMaturityRatingToAgeRestrictionEnum(string maturityRating)
+    {
+        return maturityRating switch
+        {
+            "NOT_MATURE" => AgeRestriction.Children,
+            "MATURE" => AgeRestriction.Mature,
+            _ => AgeRestriction.Teen
+        };
+    }
 }
