@@ -30,4 +30,17 @@ public static class PublishersData
         "Текст",
         "Альфа"
     ];
+
+    public static string[] BestPublishersList =>
+    [
+        "ЛитРес",
+        "Eksmo",
+        "Astrel",
+        "МИФ",
+        "Дрофа",
+        "Просвещение",
+        "Наука",
+        "Азбука",
+        "Аттикус"
+    ];
 }

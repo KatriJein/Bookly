@@ -18,7 +18,8 @@ public class CreateBookHandler(IMediator mediator, BooklyDbContext booklyDbConte
 {
     public async Task<Result<Guid>> Handle(CreateBookCommand request, CancellationToken cancellationToken)
     {
-        var existingBook = await booklyDbContext.Books.FirstOrDefaultAsync(b => b.ExternalId == request.CreateBookDto.ExternalId, cancellationToken);
+        var existingBook = await booklyDbContext.Books.FirstOrDefaultAsync(b =>
+            b.ExternalId == request.CreateBookDto.ExternalId || b.Title.ToLower() == request.CreateBookDto.Title.ToLower(), cancellationToken);
         if (existingBook != null)
         {
             logger.Information("Книга {@book} (id: {@id}) уже существует. Пропуск создания книги", request.CreateBookDto.Title,

@@ -22,9 +22,9 @@ public static class EnumMapper
     {
         return maturityRating switch
         {
-            "NOT_MATURE" => AgeRestriction.Children,
+            "NOT_MATURE" => AgeRestriction.Teen,
             "MATURE" => AgeRestriction.Mature,
-            _ => AgeRestriction.Teen
+            _ => AgeRestriction.YoungAdult
         };
     }
 }

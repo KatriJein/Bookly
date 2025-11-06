@@ -114,4 +114,28 @@ public static class GenresData
     ["Astrology"] = "Астрология",
     ["Esoteric"] = "Эзотерика"
 };
+
+    public static Dictionary<string, string> BestGenres => new()
+    {
+        ["Fiction"] = "Художественная литература",
+        ["Classics"] = "Классическая литература",
+        ["Poetry"] = "Поэзия",
+        ["Adventure"] = "Приключения",
+        ["Fantasy"] = "Фэнтези",
+        ["Science Fiction"] = "Научная фантастика",
+        ["Mystery"] = "Детектив",
+        ["Historical Fiction"] = "Историческая проза",
+        ["Biography & Autobiography"] = "Биографии и автобиографии",
+        ["History"] = "История",
+        ["Self-Help"] = "Саморазвитие",
+        ["Psychology"] = "Психология",
+        ["Education"] = "Образование",
+        ["Science"] = "Наука",
+        ["Nature"] = "Природа",
+        ["Health & Fitness"] = "Здоровье и фитнес",
+        ["Cooking"] = "Кулинария",
+        ["Art"] = "Искусство",
+        ["Travel"] = "Путешествия",
+        ["Juvenile Fiction"] = "Детская художественная литература"
+    };
 }

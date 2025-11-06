@@ -39,8 +39,8 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
             logger.Information("Пропуск следующего сбора данных с API книг: не закончился период таймаута");
             return;
         }
-        var genre = GenresData.GenresAndTheirTranslations.Keys.ElementAt(currentScrapingTaskState.CurrentGenreIndex);
-        var publisher = PublishersData.Publishers[currentScrapingTaskState.CurrentPublisherIndex];
+        var genre = GenresData.BestGenres.Keys.ElementAt(currentScrapingTaskState.CurrentGenreIndex);
+        var publisher = PublishersData.BestPublishersList[currentScrapingTaskState.CurrentPublisherIndex];
         logger.Information("Выполняется шаг получения книг с API запросом жанр: {@genre}, издатель: {@publisher}, стартовый индекс: {@startIndex}",
             genre, publisher, currentScrapingTaskState.CurrentIndex);
         var volumes = await ExecuteVolumesSearchAsync(genre, publisher, currentScrapingTaskState.CurrentIndex);
@@ -135,11 +135,11 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
             return ScrapingTaskState.Create(currentState.CurrentGenreIndex, currentState.CurrentPublisherIndex,
                 currentState.CurrentIndex + BooksIndexStep, null);
         var nextPublisherIndex = currentState.CurrentPublisherIndex + 1;
-        if (nextPublisherIndex < PublishersData.Publishers.Length)
+        if (nextPublisherIndex < PublishersData.BestPublishersList.Length)
             return ScrapingTaskState.Create(currentState.CurrentGenreIndex, nextPublisherIndex, 0, null);
         nextPublisherIndex = 0;
         var nextGenreIndex = currentState.CurrentGenreIndex + 1;
-        return nextGenreIndex < GenresData.GenresAndTheirTranslations.Count 
+        return nextGenreIndex < GenresData.BestGenres.Count 
             ? ScrapingTaskState.Create(nextGenreIndex, nextPublisherIndex, 0, null) 
             : null;
     }

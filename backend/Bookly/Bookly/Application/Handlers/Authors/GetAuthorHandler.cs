@@ -10,6 +10,8 @@ public class GetAuthorHandler(BooklyDbContext booklyDbContext) : IRequestHandler
     public async Task<Author?> Handle(GetAuthorQuery request, CancellationToken cancellationToken)
     {
         var authorName = request.Name;
+        var containingAuthor = await booklyDbContext.Authors.FirstOrDefaultAsync(a => a.Name.Contains(authorName), cancellationToken);
+        if (containingAuthor != null) return containingAuthor;
         var possibleAuthorNames = AuthorUtils
             .RetrievePossibleAuthorNamesFromAuthor(authorName)
             .Select(n => n.ToLower())

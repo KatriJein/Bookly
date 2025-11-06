@@ -31,6 +31,7 @@ public static partial class AuthorUtils
                 results.Add($"{words[0]} {words[1]} {words[2]}");
                 results.Add($"{words[0][0]}.{words[1][0]}. {words[2]}");
                 results.Add($"{words[2]} {words[0][0]}.{words[1][0]}.");
+                results.Add($"{words[2]} {words[0][0]}.");
                 break;
             default:
                 results.Add(name.Trim());

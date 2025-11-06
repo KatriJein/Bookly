@@ -34,7 +34,8 @@ namespace Bookly.Tests;
             Assert.That(result, Does.Contain("Александр Сергеевич Пушкин"));
             Assert.That(result, Does.Contain("А.С. Пушкин"));
             Assert.That(result, Does.Contain("Пушкин А.С."));
-            Assert.That(result.Count, Is.EqualTo(3));
+            Assert.That(result, Does.Contain("Пушкин А."));
+            Assert.That(result.Count, Is.EqualTo(4));
         }
 
         [Test]
