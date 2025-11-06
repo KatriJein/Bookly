@@ -1,14 +1,15 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.scss';
-import { MainPage } from './main/page/main-page';
+import { PageOfBook } from './pages';
+import { Layout } from './layout';
 
 function App() {
     return (
-        <>
-            <Routes>
-                <Route path='/' element={<MainPage />} />
-            </Routes>
-        </>
+        <Routes>
+            <Route path='/' element={<Layout />}>
+                <Route index element={<PageOfBook />} />
+            </Route>
+        </Routes>
     );
 }
 

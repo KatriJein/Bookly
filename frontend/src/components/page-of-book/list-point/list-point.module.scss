@@ -1,0 +1,14 @@
+.list {
+    display: flex;
+    flex-direction: row;
+    gap: var(--16px);
+    flex-wrap: wrap;
+    align-items: center;
+    font-weight: 300;
+    font-size: var(--font-size-20);
+}
+
+.point {
+    width: 5px;
+    height: 5px;
+}

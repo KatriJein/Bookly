@@ -1,0 +1,54 @@
+.comment {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: var(--40px);
+    width: 100%;
+    font-weight: 300;
+    font-size: var(--font-size-20);
+    border-radius: var(--border-radius);
+    border: 1px dashed var(--main-blue);
+    color: black;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 30px;
+}
+
+.user {
+    display: flex;
+    gap: var(--20px);
+    align-items: center;
+    text-decoration: none;
+    color: black;
+}
+
+.avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.date {
+    color: var(--grey);
+}
+ 
+.rating {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+
+    .star {
+        width: 30px;
+        height: 30px;
+    }
+}
