@@ -1,5 +1,7 @@
 using Bookly.Domain.Models;
+using Core.Dto.Author;
 using Core.Dto.Book;
+using Core.Dto.Genre;
 using Core.Mappers;
 
 namespace Bookly.Application.Mappers;
@@ -8,8 +10,8 @@ public static class BookMapper
 {
     public static GetFullBookDto MapBookToFullDto(Book book)
     {
-        var authors = book.Authors.Select(a => a.DisplayName).ToArray();
-        var genres = book.Genres.Select(g => g.DisplayName).ToArray();
+        var authors = book.Authors.Select(a => new GetAuthorDto(a.Id, a.Name, a.DisplayName)).ToArray();
+        var genres = book.Genres.Select(g => new GetGenreDto(g.Id, g.Name, g.DisplayName)).ToArray();
         var ageRestriction = EnumMapper.MapAgeRestrictionEnumToString(book.AgeRestriction);
         return new GetFullBookDto(
             book.Id,
@@ -31,8 +33,8 @@ public static class BookMapper
 
     public static GetShortBookDto MapBookToShortBookDto(Book book)
     {
-        var authors = book.Authors.Select(a => a.DisplayName).ToArray();
-        var genres = book.Genres.Select(g => g.DisplayName).ToArray();
+        var authors = book.Authors.Select(a => new GetAuthorDto(a.Id, a.Name, a.DisplayName)).ToArray();
+        var genres = book.Genres.Select(g => new GetGenreDto(g.Id, g.Name, g.DisplayName)).ToArray();
         return new GetShortBookDto
         (
             book.Id,

@@ -6,6 +6,7 @@ using Core;
 using Core.Data;
 using Core.Dto.Book;
 using Core.Mappers;
+using Core.Options;
 using Core.Parsers;
 using Google.Apis.Books.v1;
 using Google.Apis.Books.v1.Data;
@@ -15,12 +16,13 @@ using Google.Apis.Util;
 using Hangfire;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using ILogger = Serilog.ILogger;
 
 namespace Bookly.Application.Services.ApiScrapers;
 
 public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IMediator mediator, BooklyDbContext booklyDbContext,
-    ILogger logger, IConfiguration configuration) : IBooksApiScraperService
+    ILogger logger, IConfiguration configuration, IOptionsSnapshot<BooklyOptions> booklyOptions) : IBooksApiScraperService
 {
     private readonly IClientService _booksService = new BooksService();
 
@@ -31,6 +33,11 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
     [DisableConcurrentExecution(300)]
     public async Task ScrapeNextAsync()
     {
+        if (!booklyOptions.Value.ShouldDoBooksScraping)
+        {
+            logger.Warning("Опция {@parameterName} выключена. Операция сбора книг с API отменена", nameof(booklyOptions.Value.ShouldDoBooksScraping));
+            return;
+        }
         var currentScrapingTaskState = await booklyDbContext.ScrapingTaskStates
             .OrderByDescending(t => t.CreatedAt)
             .FirstOrDefaultAsync() ?? ScrapingTaskState.Create(0, 0, 0, null);

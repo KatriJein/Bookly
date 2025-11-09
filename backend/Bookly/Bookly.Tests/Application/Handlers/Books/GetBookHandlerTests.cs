@@ -52,8 +52,8 @@ namespace Bookly.Tests.Application.Handlers.Books;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.Title, Is.EqualTo("Война и мир"));
-            Assert.That(result.Authors, Is.EquivalentTo(new[] { "Лев Толстой" }));
-            Assert.That(result.Genres, Is.EquivalentTo(new[] { "Худлит" }));
+            Assert.That(result.Authors.Select(a => a.DisplayName), Is.EquivalentTo(new[] { "Лев Толстой" }));
+            Assert.That(result.Genres.Select(a => a.DisplayName), Is.EquivalentTo(new[] { "Худлит" }));
             Assert.That(result.AgeRestriction, Is.EqualTo("0+"));
             Assert.That(result.Description, Is.EqualTo("Описание"));
             Assert.That(result.Publisher, Is.EqualTo("Издательство"));

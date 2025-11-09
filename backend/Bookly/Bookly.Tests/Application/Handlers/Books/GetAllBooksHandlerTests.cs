@@ -105,7 +105,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
-            Assert.That(result.All(b => b.Genres.Contains("Роман")));
+            Assert.That(result.All(b => b.Genres.Select(g => g.DisplayName).Contains("Роман")));
         }
 
         [Test]
@@ -118,7 +118,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
             Assert.That(result, Has.Count.EqualTo(1));
-            Assert.That(result.First().Authors.Contains("Лев Толстой"));
+            Assert.That(result.First().Authors.Select(g => g.DisplayName).Contains("Лев Толстой"));
         }
 
         [Test]
@@ -143,7 +143,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
 
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result.First().Title.ToLower(), Does.Contain("война"));
-            Assert.That(result.First().Authors.Contains("Лев Толстой"));
+            Assert.That(result.First().Authors.Select(g => g.DisplayName).Contains("Лев Толстой"));
         }
         
         [Test]
@@ -160,7 +160,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
 
             Assert.That(result, Has.Count.EqualTo(1));
             var book = result.First();
-            Assert.That(book.Genres.Contains("Фантастика"));
+            Assert.That(book.Genres.Select(g => g.DisplayName).Contains("Фантастика"));
         }
 
         [Test]
@@ -214,7 +214,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var handler = new GetAllBooksHandler(_db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
-            Assert.That(result.All(r => r.Genres.Contains("Роман")));
+            Assert.That(result.All(r => r.Genres.Select(g => g.DisplayName).Contains("Роман")));
             var ratings = result.Select(r => r.Rating).ToList();
             var sorted = ratings.OrderByDescending(r => r).ToList();
             Assert.That(ratings, Is.EqualTo(sorted));

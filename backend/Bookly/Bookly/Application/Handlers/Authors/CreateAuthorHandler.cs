@@ -27,10 +27,10 @@ public class CreateAuthorHandler(IMediator mediator, BooklyDbContext booklyDbCon
             return Result<Author>.Failure(createAuthorResult.Error);
         }
 
-        await booklyDbContext.Authors.AddAsync(createAuthorResult.Value, cancellationToken);
+        var entity = await booklyDbContext.Authors.AddAsync(createAuthorResult.Value, cancellationToken);
         await booklyDbContext.SaveChangesAsync(cancellationToken);
         logger.Information("Автор {@author} успешно создан", request.CreateAuthorDto.Name);
-        return Result<Author>.Success(createAuthorResult.Value);
+        return Result<Author>.Success(entity.Entity);
     }
 }
 

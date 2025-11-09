@@ -12,7 +12,9 @@ public static class UserMapper
             user.Login.Value,
             user.Email.Value,
             presignedUrl,
-            user.CreatedAt);
+            user.CreatedAt,
+            user.AgeCategory,
+            user.VolumeSizePreference);
     }
 
     public static GetShortUserDto MapUserToShortDto(User user, string presignedUrl)

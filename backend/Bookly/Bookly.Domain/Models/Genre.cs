@@ -9,8 +9,10 @@ public class Genre : Entity<Guid>
     public string DisplayName { get; private set; }
 
     private readonly List<Book> _books = [];
+    private readonly List<UserGenrePreference> _userGenrePreferences = [];
 
     public IReadOnlyCollection<Book> Books => _books;
+    public IReadOnlyCollection<UserGenrePreference> UserGenrePreferences => _userGenrePreferences;
 
     public static Result<Genre> Create(CreateGenreDto createGenreDto)
     {
@@ -19,6 +21,7 @@ public class Genre : Entity<Guid>
         
         var genre = new Genre()
         {
+            Id = Guid.NewGuid(),
             Name = createGenreDto.Name,
             DisplayName = createGenreDto.DisplayName
         };

@@ -14,5 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.OwnsOne(u => u.Email,  b => b
             .Property(e => e.Value)
             .HasColumnName("Email"));
+        builder.Property(u => u.AgeCategory).HasConversion<string>();
+        builder.Property(u => u.VolumeSizePreference).HasConversion<string>();
     }
 }

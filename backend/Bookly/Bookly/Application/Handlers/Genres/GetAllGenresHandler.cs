@@ -10,7 +10,7 @@ public class GetAllGenresHandler(BooklyDbContext booklyDbContext) : IRequestHand
 {
     public async Task<List<GetGenreDto>> Handle(GetAllGenresQuery request, CancellationToken cancellationToken)
     {
-        var genres = await booklyDbContext.Genres.OrderBy(g => g.DisplayName).ToListAsync(cancellationToken);
+        var genres = await booklyDbContext.Genres.ToListAsync(cancellationToken);
         var mappedGenres = genres
             .Select(g => new GetGenreDto(g.Id, g.Name, g.DisplayName))
             .ToList();

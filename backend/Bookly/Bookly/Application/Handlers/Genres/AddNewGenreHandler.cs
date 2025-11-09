@@ -21,10 +21,10 @@ public class AddNewGenreHandler(BooklyDbContext booklyDbContext, ILogger logger)
         }
         var genreRes = Genre.Create(request.CreateGenreDto);
         if (genreRes.IsFailure) return genreRes;
-        await booklyDbContext.Genres.AddAsync(genreRes.Value, cancellationToken);
+        var entity = await booklyDbContext.Genres.AddAsync(genreRes.Value, cancellationToken);
         await booklyDbContext.SaveChangesAsync(cancellationToken);
         logger.Information("Жанр {@genre} успешно добавлен в БД", genreRes.Value.Name);
-        return Result<Genre>.Success(genreRes.Value);
+        return Result<Genre>.Success(entity.Entity);
     }
 }
 

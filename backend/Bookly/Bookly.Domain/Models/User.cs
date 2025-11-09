@@ -1,5 +1,6 @@
 using Core;
 using Core.Dto.User;
+using Core.Enums;
 using Core.ValueObjects;
 
 namespace Bookly.Domain.Models;
@@ -11,7 +12,16 @@ public class User : Entity<Guid>
     public string? AvatarKey { get; private set; }
     public DateTime CreatedAt  { get; private set; }
     public DateTime UpdatedAt  { get; private set; }
+    public AgeCategory? AgeCategory  { get; private set; }
+    public VolumeSizePreference? VolumeSizePreference  { get; private set; }
     public string PasswordHash { get; private set; }
+    public bool TookEntrySurvey { get; private set; }
+    
+    private readonly List<UserGenrePreference> _userGenrePreferences = [];
+    private readonly List<UserAuthorPreference> _userAuthorPreferences = [];
+    
+    public IReadOnlyCollection<UserGenrePreference> UserGenrePreferences => _userGenrePreferences;
+    public IReadOnlyCollection<UserAuthorPreference> UserAuthorPreferences => _userAuthorPreferences;
 
     public static Result<User> Create(CreateUserDto createUserDto)
     {
@@ -54,4 +64,17 @@ public class User : Entity<Guid>
         PasswordHash = passwordHash;
         UpdatedAt = DateTime.UtcNow;
     }
+
+    public void AddGenrePreferences(IEnumerable<UserGenrePreference> userGenrePreferences) =>
+        _userGenrePreferences.AddRange(userGenrePreferences);
+
+    public void AddAuthorPreferences(IEnumerable<UserAuthorPreference> userAuthorPreferences) =>
+        _userAuthorPreferences.AddRange(userAuthorPreferences);
+
+    public void MarkEntrySurveyTaken() => TookEntrySurvey = true;
+
+    public void SetAgeCategory(AgeCategory ageCategory) => AgeCategory = ageCategory;
+
+    public void SetVolumeSizePreference(VolumeSizePreference volumeSizePreference) =>
+        VolumeSizePreference = volumeSizePreference;
 }

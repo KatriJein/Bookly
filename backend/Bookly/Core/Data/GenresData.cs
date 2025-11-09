@@ -17,7 +17,6 @@ public static class GenresData
     ["Thrillers"] = "Триллеры",
     ["Horror"] = "Ужасы",
     ["Romance"] = "Романтика",
-    ["Erotica"] = "Эротика",
     ["Historical Fiction"] = "Историческая проза",
     ["Humor"] = "Юмор",
     ["Satire"] = "Сатира",
@@ -118,7 +117,7 @@ public static class GenresData
     public static Dictionary<string, string> BestGenres => new()
     {
         ["Fiction"] = "Художественная литература",
-        ["Classics"] = "Классическая литература",
+        ["Drama"] = "Драма",
         ["Poetry"] = "Поэзия",
         ["Adventure"] = "Приключения",
         ["Fantasy"] = "Фэнтези",
@@ -136,6 +135,7 @@ public static class GenresData
         ["Cooking"] = "Кулинария",
         ["Art"] = "Искусство",
         ["Travel"] = "Путешествия",
-        ["Juvenile Fiction"] = "Детская художественная литература"
+        ["Juvenile Fiction"] = "Детская художественная литература",
+        ["Juvenile Nonfiction"] = "Детская познавательная литература"
     };
 }
