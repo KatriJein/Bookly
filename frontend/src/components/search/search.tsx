@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { DropDownButton, DropDownRatingItem, SearchBar } from '../uikit';
 import styles from './search.module.scss';
 
@@ -48,12 +49,61 @@ const genres = [
     'Исторический',
 ];
 
+const authors = [
+    'Эрих Мария Ремарк',
+    'Джоан Роулинг',
+    'Джеффри Робертс',
+    'Джейн Остин',
+    'Джордж Оруэлл',
+    'Эрнест Хемингуэй',
+    'Джоан Роулинг',
+    'Джеффри Робертс',
+    'Джейн Остин',
+    'Джордж Оруэлл',
+    'Эрнест Хемингуэй',
+    'Джоан Роулинг',
+    'Джеффри Робертс',
+    'Джейн Остин',
+    'Джордж Оруэлл',
+    'Эрнест Хемингуэй',
+];
+
 export function Search() {
     return (
         <div className={styles.search}>
-            <SearchBar />
-            <DropDownButton text='Сортировать по' listType='single' color='blue' {...ratingElement} />
-            <DropDownButton text='Жанр' listType='multiple' color='pink' items={genres} />
+            <div className={styles.searchBar}>
+                <SearchBar />
+                <button className={clsx('button', styles.button)}>
+                    Предложить книгу
+                </button>
+            </div>
+
+            <div className={styles.filters}>
+                <DropDownButton
+                    text='Сортировать по'
+                    listType='single'
+                    color='blue'
+                    {...ratingElement}
+                />
+                <DropDownButton
+                    text='Жанр'
+                    listType='multiple'
+                    color='pink'
+                    items={genres}
+                />
+                <DropDownButton
+                    text='Автор'
+                    listType='multiple'
+                    color='pink'
+                    items={authors}
+                />
+                <DropDownButton
+                    text='Рейтинг'
+                    listType='single'
+                    color='pink'
+                    {...ratingElement}
+                />
+            </div>
         </div>
     );
 }

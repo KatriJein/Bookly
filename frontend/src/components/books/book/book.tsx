@@ -5,11 +5,13 @@ import Point from '../../../assets/svg/point.svg';
 import Menu from '../../../assets/svg/menu.svg';
 import { HeartIcon, MenuPopUp } from '../../uikit';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export function Book() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -39,12 +41,20 @@ export function Book() {
     const closeMenu = () => {
         setIsMenuOpen(false);
     };
+
+    const handleDetailsClick = () => {
+        navigate('/page');
+    };
+
     return (
         <div className={styles.book}>
             <img src={Cover} alt='Cover' className={styles.cover} />
 
             <button className={styles.like}>
-                <HeartIcon className={styles.icon} strokeClassName={styles.stroke} />
+                <HeartIcon
+                    className={styles.icon}
+                    strokeClassName={styles.stroke}
+                />
             </button>
 
             <div className={styles.info}>
@@ -87,7 +97,12 @@ export function Book() {
                 </div>
             </div>
 
-            <button className={`button ${styles.button}`}>Подробнее</button>
+            <button
+                className={`button ${styles.button}`}
+                onClick={handleDetailsClick}
+            >
+                Подробнее
+            </button>
         </div>
     );
 }
