@@ -4,8 +4,14 @@
     min-height: 100vh;
 }
 
-// .main {
-//     // width: 80%;
-//     margin: 0 auto;
-//     flex: 1;
-// }
+.main {
+    width: 80%;
+    margin: var(--40px) auto;
+    flex: 1;
+}
+
+.mainPage {
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
+}

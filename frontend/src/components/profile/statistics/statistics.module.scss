@@ -1,0 +1,23 @@
+.statistics {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 40px;
+    border-radius: 8px;
+    color: white;
+    font-weight: 300;
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}
+
+.text {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+}

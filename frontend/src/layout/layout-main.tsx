@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Footer, Header } from '../components';
 import { useLayoutEffect } from 'react';
 
-export function Layout() {
+export function LayoutMain() {
     const { pathname } = useLocation();
 
     useLayoutEffect(() => {
@@ -13,7 +13,7 @@ export function Layout() {
     return (
         <div className={styles.layout}>
             <Header />
-            <main className={styles.main}>
+            <main className={styles.mainPage}>
                 <Outlet />
             </main>
             <Footer />

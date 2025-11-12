@@ -2,11 +2,10 @@
     display: flex;
     flex-direction: column;
     gap: var(--60px);
-    padding: var(--40px) 0;
-    width: 80%;
+    // padding: var(--40px) 0;
+    width: 100%;
     font-weight: 300;
     font-size: var(--font-size-20);
-    margin: 0 auto;
 }
 
 .content {
@@ -64,17 +63,7 @@
     justify-content: center;
 }
 
-.genre {
-    padding: 10px 16px;
-    border-radius: 40px;
-    border: 1px solid black;
-    font-size: var(--font-size-16);
-    font-weight: 300;
-    color: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+
 
 .buttons {
     display: flex;

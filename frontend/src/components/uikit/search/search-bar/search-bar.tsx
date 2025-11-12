@@ -46,7 +46,7 @@ export function SearchBar({
                 />
                 <button
                     type='submit'
-                    className={clsx(styles.searchButton, 'button')}
+                    className={clsx(styles.searchButton, 'button', 'blue')}
                     disabled={!searchQuery.trim()}
                 >
                     Найти

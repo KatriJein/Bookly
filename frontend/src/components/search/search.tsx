@@ -1,6 +1,12 @@
 import clsx from 'clsx';
-import { DropDownButton, DropDownRatingItem, SearchBar } from '../uikit';
+import {
+    DropDownButton,
+    DropDownRatingItem,
+    ItemOfSort,
+    SearchBar,
+} from '../uikit';
 import styles from './search.module.scss';
+import ArrowRight from '../../assets/svg/arrow_right.svg';
 
 const ratingElement = {
     items: [
@@ -34,6 +40,40 @@ const ratingElement = {
         },
     ],
     name: 'rating',
+};
+
+const sortElement = {
+    items: [
+        {
+            id: 'popular asc',
+            content: ItemOfSort({
+                title: 'По популярности',
+                sortOrder: 'asc',
+            }),
+        },
+        {
+            id: 'popular desc',
+            content: ItemOfSort({
+                title: 'По популярности',
+                sortOrder: 'desc',
+            }),
+        },
+        {
+            id: 'rating asc',
+            content: ItemOfSort({
+                title: 'По рейтингу',
+                sortOrder: 'asc',
+            }),
+        },
+        {
+            id: 'rating desc',
+            content: ItemOfSort({
+                title: 'По рейтингу',
+                sortOrder: 'desc',
+            }),
+        },
+    ],
+    name: 'sort',
 };
 
 const genres = [
@@ -73,7 +113,7 @@ export function Search() {
         <div className={styles.search}>
             <div className={styles.searchBar}>
                 <SearchBar />
-                <button className={clsx('button', styles.button)}>
+                <button className={clsx('button', 'pink', styles.button)}>
                     Предложить книгу
                 </button>
             </div>
@@ -83,7 +123,7 @@ export function Search() {
                     text='Сортировать по'
                     listType='single'
                     color='blue'
-                    {...ratingElement}
+                    {...sortElement}
                 />
                 <DropDownButton
                     text='Жанр'
@@ -103,6 +143,10 @@ export function Search() {
                     color='pink'
                     {...ratingElement}
                 />
+                <button className={clsx('button', 'pink', styles.link)}>
+                    <span>По вашим интересам</span>
+                    <img src={ArrowRight} alt='Arrow right' />
+                </button>
             </div>
         </div>
     );

@@ -1,0 +1,60 @@
+.personalInfo {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: var(--28px);
+    font-size: 16px;
+    font-weight: 300;
+    justify-content: space-between;
+    height: 100%;
+    align-items: stretch;
+    min-height: 150px;
+    height: 150px;
+}
+
+.avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    align-self: flex-start;
+}
+
+.info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    gap: 10px;
+}
+
+.name {
+    display: flex;
+    flex-direction: column;
+    gap: var(--16px);
+}
+
+.title {
+    font-weight: 400;
+    font-size: var(--font-size-28);
+}
+
+.button {
+    padding: 10px;
+    font-size: var(--font-size-16);
+    font-weight: 300;
+    margin-top: auto;
+}
+
+.edit {
+    padding: 3px;
+    padding-top: 0;
+    align-self: flex-start;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+}

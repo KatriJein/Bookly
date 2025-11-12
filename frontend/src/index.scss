@@ -93,10 +93,13 @@ $default-max-bp: 1920px;
     --dark-blue: #1a1a2e;
     --blue: #0f3460;
     --pink: #e94560;
+    --pink-hover: #b2122c;
     --main-blue: #1372f2;
+    --blue-hover: #0053c3;
     --star-yellow: #ff9f1c;
     --grey: #969696;
 
+    --font-size-14: #{fluid(12px, 14px)};
     --font-size-16: #{fluid(14px, 16px)};
     --font-size-18: #{fluid(16px, 18px)};
     --font-size-20: #{fluid(18px, 20px)};
@@ -110,14 +113,13 @@ $default-max-bp: 1920px;
     --100px: 5.2vw;
     --80px: 4.15vw;
     --60px: 3.125vw;
+    --50px: 2.6vw;
     --40px: 2vw;
     --32px: 1.6vw;
     --28px: 1.46vw;
     --20px: 1.05vw;
     --16px: 0.9vw;
     --12px: 0.625vw;
-
-
 }
 
 :root {
@@ -140,5 +142,37 @@ body {
         border-radius: var(--border-radius);
         font-weight: 300;
         font-family: 'Stolzl';
+        transition: background-color 0.3s ease, transform 0.2s ease;
+
+        &.blue {
+            background-color: var(--main-blue);
+            color: white;
+
+            &:hover {
+                background-color: var(--blue-hover);
+            }
+        }
+
+        &.pink {
+            background-color: var(--pink);
+            color: white;
+
+            &:hover {
+                background-color: var(--pink-hover);
+            }
+        }
+    }
+
+    .genre {
+        width: fit-content;
+        padding: 10px 16px;
+        border-radius: 40px;
+        border: 1px solid black;
+        font-size: var(--font-size-16);
+        font-weight: 300;
+        color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }

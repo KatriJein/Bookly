@@ -19,6 +19,7 @@ export function CollectionsList(params: Params) {
                 <CollectionBig />
                 <CollectionBig />
                 <CollectionBig />
+                 <CollectionBig />
             </ul>
         </div>
     );

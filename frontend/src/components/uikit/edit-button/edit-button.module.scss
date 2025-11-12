@@ -1,0 +1,15 @@
+.editButton {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1);
+    }
+}
+
+.icon {
+    width: 25px;
+    height: 25px;
+}

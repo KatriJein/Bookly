@@ -6,6 +6,7 @@ import Menu from '../../../assets/svg/menu.svg';
 import { HeartIcon, MenuPopUp } from '../../uikit';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import clsx from 'clsx';
 
 export function Book() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,7 +99,7 @@ export function Book() {
             </div>
 
             <button
-                className={`button ${styles.button}`}
+                className={clsx('button', 'pink', styles.button)}
                 onClick={handleDetailsClick}
             >
                 Подробнее

@@ -29,10 +29,10 @@ export function PageOfBook() {
                         />
                         <div className={styles.tags}>
                             <span className={styles.age}>12+</span>
-                            <span className={styles.genre}>Классика</span>
-                            <span className={styles.genre}>Фантастика</span>
-                            <span className={styles.genre}>Научпоп</span>
-                            <span className={styles.genre}>Драма</span>
+                            <span className={clsx('genre')}>Классика</span>
+                            <span className={clsx('genre')}>Фантастика</span>
+                            <span className={clsx('genre')}>Научпоп</span>
+                            <span className={clsx('genre')}>Драма</span>
                         </div>
                         <BookRating className={styles.rating} rating={3.2} />
                         <p className={styles.descriptionText}>

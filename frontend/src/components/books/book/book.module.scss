@@ -183,15 +183,15 @@
 
     .button {
         width: 100%;
-        background-color: var(--pink);
-        color: white;
+        // background-color: var(--pink);
+        // color: white;
         padding: 10px;
         font-size: var(--font-size-16);
         transition: all 0.3s ease;
 
-        &:hover {
-            background-color: #d63384;
-        }
+        // &:hover {
+        //     background-color: #d63384;
+        // }
 
         &:active {
             transform: translateY(0);

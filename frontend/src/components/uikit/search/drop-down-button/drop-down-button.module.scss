@@ -14,17 +14,19 @@
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: var(--font-size-14);
-    font-weight: 500;
+    font-family: 'Stolzl';
+    font-weight: 300;
     text-decoration: none;
     outline: none;
     
     // Голубая версия
     &.blue {
-        background: var(--main-blue) !important;
+        background-color: var(--main-blue) !important;
         color: white;
 
         &:hover {
-            background-color: var(--main-blue);
+            background-color: var(--blue-hover) !important;
+            transform: translateY(-1px);
         }
 
         &:active {
@@ -39,7 +41,7 @@
         border-color: var(--pink);
 
         &:hover {
-            background-color: rgba(255, 64, 129, 0.05);
+            transform: translateY(-1px);
         }
 
         &:active {

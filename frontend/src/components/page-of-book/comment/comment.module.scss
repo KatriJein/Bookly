@@ -52,3 +52,21 @@
         height: 30px;
     }
 }
+
+.rate {
+    display: flex;
+    gap: var(--20px);
+    align-items: center;
+}
+
+.edit {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 3px;
+
+    .icon {
+        width: 24px;
+        height: 24px;
+    }
+}
