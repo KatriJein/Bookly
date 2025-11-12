@@ -1,0 +1,13 @@
+.itemOfSort {
+    font-size: 16;
+    font-weight: 300;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.arrow {
+    height: 15px;
+}

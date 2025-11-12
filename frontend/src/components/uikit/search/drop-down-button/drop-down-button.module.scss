@@ -1,0 +1,109 @@
+// drop-down-button.module.scss
+.dropDownButtonContainer {
+    position: relative;
+    display: inline-block;
+}
+
+.dropDownButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid transparent;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: var(--font-size-14);
+    font-family: 'Stolzl';
+    font-weight: 300;
+    text-decoration: none;
+    outline: none;
+    
+    // Голубая версия
+    &.blue {
+        background-color: var(--main-blue) !important;
+        color: white;
+
+        &:hover {
+            background-color: var(--blue-hover) !important;
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(1px);
+        }
+    }
+    
+    // Розовая версия
+    &.pink {
+        background-color: white;
+        color: var(--pink);
+        border-color: var(--pink);
+
+        &:hover {
+            transform: translateY(-1px);
+        }
+
+        &:active {
+            transform: translateY(1px);
+        }
+    }
+
+    &.open {
+        .arrow {
+            transform: rotate(180deg);
+        }
+    }
+}
+
+.icon {
+    width: 16px;
+    height: 16px;
+}
+
+.buttonText {
+    white-space: nowrap;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+    
+    // Стили для цветов стрелки
+    &.arrow-white {
+        color: white;
+    }
+    
+    &.arrow-pink {
+        color: var(--pink);
+    }
+}
+
+.arrowRotated {
+    transform: rotate(180deg);
+}
+
+.dropdownContent {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 8px;
+    z-index: 1000;
+    min-width: 250px;
+}
+
+// Анимация появления
+.dropdownContent {
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

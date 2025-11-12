@@ -1,0 +1,25 @@
+.dropDownRatingItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    .text {
+        font-weight: 300;
+        font-size: var(--font-size-16);
+        color: black;
+        position: relative;
+        top: 1px;
+        flex-shrink: 0;
+    }
+
+    .starsContainer {
+        display: flex;
+        gap: 4px;
+
+        .star {
+            width: 15px;
+            height: 15px;
+        }
+    }
+}

@@ -1,0 +1,33 @@
+.search {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--20px);
+}
+
+.filters {
+    display: flex;
+    flex-direction: row;
+    gap: var(--20px);
+}
+
+.searchBar {
+    display: flex;
+    flex-direction: row;
+    gap: var(--20px);
+}
+
+.button {
+    flex-shrink: 0;
+    padding: 0 26px !important;
+    font-weight: 300;
+}
+
+.link {
+    font-weight: 300;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px !important;
+}

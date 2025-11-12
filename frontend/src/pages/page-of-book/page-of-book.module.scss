@@ -1,0 +1,128 @@
+.pageOfBook {
+    display: flex;
+    flex-direction: column;
+    gap: var(--60px);
+    // padding: var(--40px) 0;
+    width: 100%;
+    font-weight: 300;
+    font-size: var(--font-size-20);
+}
+
+.content {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: var(--32px);
+}
+
+.title {
+    font-size: var(--font-size-36);
+    font-weight: 400;
+}
+
+.author {
+    font-size: var(--font-size-26);
+}
+
+.cover {
+    width: 30%;
+    height: auto;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+}
+
+.info {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--40px);
+    justify-content: space-between;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    gap: var(--20px);
+}
+
+.tags {
+    display: flex;
+    flex-direction: row;
+    gap: var(--28px);
+}
+
+.age {
+    padding: 10px 16px;
+    border-radius: 40px;
+    background-color: var(--pink);
+    font-size: var(--font-size-16);
+    font-weight: 300;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: var(--20px);
+
+    .button {
+        padding: 11px 43px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        font-size: var(--font-size-16);
+        font-weight: 300;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        &.pink {
+            border: 1px solid var(--pink);
+            color: var(--pink);
+        }
+
+        &.blue {
+            border: 1px solid var(--main-blue);
+            color: var(--main-blue);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+// comments
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    gap: var(--40px);
+}
+
+.commentsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.commentsTitle {
+    font-size: var(--font-size-28);
+    font-family: 'Nauryz';
+}
+
+.commentsList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--28px);
+}
