@@ -5,6 +5,7 @@ using Bookly.Infrastructure;
 using Core;
 using Core.Data;
 using Core.Dto.Book;
+using Core.Enums;
 using Core.Mappers;
 using Core.Options;
 using Core.Parsers;
@@ -81,7 +82,7 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
         try
         {
             var volumesResource = new VolumesResource(_booksService);
-            var query = $"subject:{subject} inpublisher:{publisher}";
+            var query = $"subject:\"{subject}\" inpublisher:\"{publisher}\"";
             var request = volumesResource.List(query);
             request.StartIndex = startIndex;
             request.LangRestrict = LangRestrict;
@@ -113,6 +114,12 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
                 if (!DateParser.TryParseBookDate(volumeInfo.PublishedDate, out var date)) 
                     throw new Exception($"Не удалось распарсить дату издания тома ({volumeInfo.PublishedDate})");
                 if (volumeInfo.Authors.Count <= 0) throw new Exception("Отсутствуют авторы тома");
+                var ageRestriction = EnumMapper.MapStringMaturityRatingToAgeRestrictionEnum(volumeInfo.MaturityRating);
+                if (ageRestriction is not AgeRestriction.Mature)
+                {
+                    var hasPredefinedRestriction = GenreRestrictionsData.GenreRestrictions.TryGetValue(subject, out var restriction);
+                    if (hasPredefinedRestriction) ageRestriction = restriction;
+                }
                 var createBookDto = new CreateBookDto(
                     volumeInfo.Title,
                     volumeInfo.Description,
@@ -122,7 +129,7 @@ public class BooksApiScraperService(IRecurringJobManager recurringJobManager, IM
                     publisher,
                     date.Year,
                     volumeInfo.PageCount ?? 0,
-                    EnumMapper.MapStringMaturityRatingToAgeRestrictionEnum(volumeInfo.MaturityRating),
+                    ageRestriction,
                     volumeInfo.ImageLinks.Thumbnail,
                     volumeId,
                     volumeInfo.Authors.ToArray(),

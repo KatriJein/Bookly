@@ -17,7 +17,7 @@ public class PublishersSeedService(IServiceScopeFactory serviceScopeFactory, ILo
             logger.Information("Информация об издателях уже присутствует. Пропуск процедуры наполнения данных");
             return;
         }
-        var publishers = PublishersData.Publishers.Select(p => Publisher.Create(new CreatePublisherDto(p)).Value);
+        var publishers = PublishersData.BestPublishersList.Select(p => Publisher.Create(new CreatePublisherDto(p)).Value);
         await booklyDbContext.Publishers.AddRangeAsync(publishers, cancellationToken);
         await booklyDbContext.SaveChangesAsync(cancellationToken);
         logger.Information("Информация об издателя успешно добавлена в БД");

@@ -1,4 +1,5 @@
 using Bookly.Application.Handlers.Authors;
+using Core.Dto.Author;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +14,9 @@ public class AuthorsController(IMediator mediator) : ControllerBase
     /// </summary>
     [HttpGet]
     [Route("")]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromQuery] AuthorSearchSettingsDto authorSearchSettingsDto, CancellationToken cancellationToken)
     {
-        var authors = await mediator.Send(new GetAllAuthorsQuery(), cancellationToken);
+        var authors = await mediator.Send(new GetAllAuthorsQuery(authorSearchSettingsDto), cancellationToken);
         return Ok(authors);
     }
 }

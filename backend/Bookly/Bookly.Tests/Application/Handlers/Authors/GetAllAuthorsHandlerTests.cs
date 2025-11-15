@@ -33,17 +33,32 @@ public class GetAllAuthorsHandlerTests
         await _db.SaveChangesAsync();
 
         var handler = new GetAllAuthorsHandler(_db);
-        var result = await handler.Handle(new GetAllAuthorsQuery(), CancellationToken.None);
+        var result = await handler.Handle(new GetAllAuthorsQuery(new AuthorSearchSettingsDto()), CancellationToken.None);
 
         Assert.That(result, Has.Count.EqualTo(3));
         Assert.That(result[0].FullName, Is.EqualTo("Пушкин А.С."));
     }
 
     [Test]
+    public async Task Handle_ReturnsAllAuthors_AsDtos_WithFilter()
+    {
+        _db.Authors.AddRange(
+            Author.Create(new CreateAuthorDto("Пушкин А.С.", "Александр Пушкин")).Value,
+            Author.Create(new CreateAuthorDto("Пушкин Сергей", "Сергей Пушкин")).Value,
+            Author.Create(new CreateAuthorDto("Достоевский Ф.М.", "Федор Достоевский")).Value);
+        await _db.SaveChangesAsync();
+        
+        var handler = new GetAllAuthorsHandler(_db);
+        var result = await handler.Handle(new GetAllAuthorsQuery(new AuthorSearchSettingsDto("пуш")), CancellationToken.None);
+        
+        Assert.That(result, Has.Count.EqualTo(2));
+    }
+
+    [Test]
     public async Task Handle_ReturnsEmptyList_WhenNoAuthorsExist()
     {
         var handler = new GetAllAuthorsHandler(_db);
-        var result = await handler.Handle(new GetAllAuthorsQuery(), CancellationToken.None);
+        var result = await handler.Handle(new GetAllAuthorsQuery(new AuthorSearchSettingsDto()), CancellationToken.None);
         Assert.That(result, Is.Empty);
     }
 }

@@ -14,6 +14,7 @@ public class User : Entity<Guid>
     public DateTime UpdatedAt  { get; private set; }
     public AgeCategory? AgeCategory  { get; private set; }
     public VolumeSizePreference? VolumeSizePreference  { get; private set; }
+    public bool HatedGenresStrictRestriction { get; private set; }
     public string PasswordHash { get; private set; }
     public bool TookEntrySurvey { get; private set; }
     
@@ -74,6 +75,7 @@ public class User : Entity<Guid>
     public void MarkEntrySurveyTaken() => TookEntrySurvey = true;
 
     public void SetAgeCategory(AgeCategory ageCategory) => AgeCategory = ageCategory;
+    public void SetHatedGenresRestriction(bool isBlacklist) => HatedGenresStrictRestriction = isBlacklist;
 
     public void SetVolumeSizePreference(VolumeSizePreference volumeSizePreference) =>
         VolumeSizePreference = volumeSizePreference;

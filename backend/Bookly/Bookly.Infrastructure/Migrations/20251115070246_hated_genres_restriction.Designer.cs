@@ -3,6 +3,7 @@ using System;
 using Bookly.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookly.Infrastructure.Migrations
 {
     [DbContext(typeof(BooklyDbContext))]
-    partial class BooklyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115070246_hated_genres_restriction")]
+    partial class hated_genres_restriction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

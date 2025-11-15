@@ -36,7 +36,8 @@ public class GetAllBooksHandler(BooklyDbContext booklyDbContext) : IRequestHandl
             new ByPublisherSearchFunction(bookSearchSettingsDto.SearchByPublisher),
             new ByAuthorsSearchFunction(bookSearchSettingsDto.SearchByAuthors),
             new ByGenresSearchFunction(bookSearchSettingsDto.SearchByGenres),
-            new ByRatingSearchFunction(bookSearchSettingsDto.SearchByRating)
+            new ByRatingSearchFunction(bookSearchSettingsDto.SearchByRating),
+            new ByVolumeSizeSearchFunction(bookSearchSettingsDto.SearchByVolumeSizePreference)
         };
         return functions;
     }

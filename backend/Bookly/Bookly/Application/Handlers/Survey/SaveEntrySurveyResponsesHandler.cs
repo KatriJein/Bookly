@@ -38,6 +38,7 @@ public class SaveEntrySurveyResponsesHandler(IMediator mediator, BooklyDbContext
         user.AddAuthorPreferences(newPreferences.AuthorPreferences);
         user.SetAgeCategory(request.EntrySurveyDataDto.AgeCategory);
         user.SetVolumeSizePreference(request.EntrySurveyDataDto.VolumeSizePreference);
+        user.SetHatedGenresRestriction(request.EntrySurveyDataDto.HatedGenresToBlacklist);
         user.MarkEntrySurveyTaken();
         await booklyDbContext.SaveChangesAsync(cancellationToken);
         return Result.Success();

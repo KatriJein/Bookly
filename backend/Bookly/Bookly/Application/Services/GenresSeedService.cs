@@ -19,7 +19,7 @@ public class GenresSeedService(ILogger logger, IServiceScopeFactory serviceScope
             logger.Information("Таблица жанров не пуста. Пропуск добавления данных");
             return;
         }
-        var genres = GenresData.GenresAndTheirTranslations
+        var genres = GenresData.BestGenres
             .Select(g => Genre.Create(new CreateGenreDto(g.Key, g.Value)).Value);
         await booklyDbContext.Genres.AddRangeAsync(genres, cancellationToken);
         await booklyDbContext.SaveChangesAsync(cancellationToken);
