@@ -22,8 +22,8 @@ public static class UserMapper
         return new GetShortUserDto(user.Id, user.Login.Value, presignedUrl);
     }
 
-    public static AuthResponseDto MapUserToAuthResponseDto(User user, string presignedUrl)
+    public static AuthResponseDto MapUserToAuthResponseDto(User user, string presignedUrl, string accessToken)
     {
-        return new AuthResponseDto(user.Id, user.Login.Value, user.Email.Value, presignedUrl);
+        return new AuthResponseDto(user.Id, user.Login.Value, user.Email.Value, presignedUrl, accessToken);
     }
 }

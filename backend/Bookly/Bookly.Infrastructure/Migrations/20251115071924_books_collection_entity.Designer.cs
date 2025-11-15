@@ -3,6 +3,7 @@ using System;
 using Bookly.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookly.Infrastructure.Migrations
 {
     [DbContext(typeof(BooklyDbContext))]
-    partial class BooklyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251115071924_books_collection_entity")]
+    partial class books_collection_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -148,9 +151,6 @@ namespace Bookly.Infrastructure.Migrations
                     b.Property<string>("CoverUrl")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
 
@@ -167,9 +167,6 @@ namespace Bookly.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
@@ -177,7 +174,7 @@ namespace Bookly.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("BookCollections");
+                    b.ToTable("BookCollection");
                 });
 
             modelBuilder.Entity("Bookly.Domain.Models.Genre", b =>
@@ -385,7 +382,7 @@ namespace Bookly.Infrastructure.Migrations
             modelBuilder.Entity("Bookly.Domain.Models.BookCollection", b =>
                 {
                     b.HasOne("Bookly.Domain.Models.User", "User")
-                        .WithMany("BookCollections")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -485,8 +482,6 @@ namespace Bookly.Infrastructure.Migrations
 
             modelBuilder.Entity("Bookly.Domain.Models.User", b =>
                 {
-                    b.Navigation("BookCollections");
-
                     b.Navigation("UserAuthorPreferences");
 
                     b.Navigation("UserGenrePreferences");

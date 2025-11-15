@@ -1,6 +1,7 @@
 using Bookly.Application.Handlers.Auth;
 using Core.Dto.User;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers;
@@ -19,6 +20,17 @@ public class AuthController(IMediator mediator) : ControllerBase
         var authRes = await mediator.Send(new AuthenthicationCommand(request));
         if (authRes.IsFailure) return BadRequest(authRes.Error);
         return Ok(authRes.Value);
+    }
+
+    /// <summary>
+    /// Проверить аутентификацию пользователя
+    /// </summary>
+    [HttpPost]
+    [Route("am-authenticated")]
+    [Authorize]
+    public IActionResult CheckAuthentication()
+    {
+        return Ok();
     }
 
     /// <summary>

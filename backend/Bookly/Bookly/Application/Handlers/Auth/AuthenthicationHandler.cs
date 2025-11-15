@@ -6,6 +6,7 @@ using Core;
 using Core.Dto.File;
 using Core.Dto.User;
 using Core.Options;
+using Core.Utils;
 using Google.Apis.Books.v1;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -13,7 +14,7 @@ using Microsoft.Extensions.Options;
 namespace Bookly.Application.Handlers.Auth;
 
 public class AuthenthicationHandler(IMediator mediator, ILoginChain loginChain, IPasswordHasher passwordHasher,
-    IOptionsSnapshot<BooklyOptions> booklyOptions) : IRequestHandler<AuthenthicationCommand, Result<AuthResponseDto>>
+    IOptionsSnapshot<BooklyOptions> booklyOptions, IConfiguration configuration) : IRequestHandler<AuthenthicationCommand, Result<AuthResponseDto>>
 {
     public async Task<Result<AuthResponseDto>> Handle(AuthenthicationCommand request, CancellationToken cancellationToken)
     {
@@ -23,7 +24,13 @@ public class AuthenthicationHandler(IMediator mediator, ILoginChain loginChain, 
         if (!isCorrectPassword) return Result<AuthResponseDto>.Failure("Некорректный логин или пароль");
         var getPresignedUrlDto = new GetObjectPresinedUrlDto(booklyOptions.Value.BooklyFilesStorageBucketName, user.AvatarKey);
         var presignedUrl = await mediator.Send(new GetPresignedUrlQuery(getPresignedUrlDto), cancellationToken);
-        return Result<AuthResponseDto>.Success(UserMapper.MapUserToAuthResponseDto(user, presignedUrl));
+        var claims = new Dictionary<string, string>()
+        {
+            { "UserId", user.Id.ToString() },
+            { "Login", user.Login.Value }
+        };
+        var accessToken = JwtTokenGenerator.GenerateToken(claims, configuration);
+        return Result<AuthResponseDto>.Success(UserMapper.MapUserToAuthResponseDto(user, presignedUrl, accessToken.Value));
     }
 }
 

@@ -18,6 +18,8 @@ public class GetAllBooksHandler(BooklyDbContext booklyDbContext) : IRequestHandl
             .Include(b => b.Genres)
             .Include(b => b.Authors)
             .Include(b => b.Publisher);
+        if (request.BookSearchSettingsDto.SearchInBookCollection != null)
+            booksWithIncludedInfo.Include(b => b.BookCollections);
         var searchFunctions = CreateSearchFunctionsBasedOnIncomingSearchSettings(request.BookSearchSettingsDto);
         var sortingFunction = CreateSortingFunctionBasedOnIncomingSortingSettings(request.BookSearchSettingsDto);
         var books = await booksWithIncludedInfo
@@ -37,7 +39,8 @@ public class GetAllBooksHandler(BooklyDbContext booklyDbContext) : IRequestHandl
             new ByAuthorsSearchFunction(bookSearchSettingsDto.SearchByAuthors),
             new ByGenresSearchFunction(bookSearchSettingsDto.SearchByGenres),
             new ByRatingSearchFunction(bookSearchSettingsDto.SearchByRating),
-            new ByVolumeSizeSearchFunction(bookSearchSettingsDto.SearchByVolumeSizePreference)
+            new ByVolumeSizeSearchFunction(bookSearchSettingsDto.SearchByVolumeSizePreference),
+            new ByBookCollectionSearchFunction(bookSearchSettingsDto.SearchInBookCollection)
         };
         return functions;
     }

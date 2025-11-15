@@ -1,4 +1,5 @@
 using Bookly.Application.Handlers.Auth;
+using Bookly.Application.Handlers.BookCollections;
 using Bookly.Application.Handlers.Passwords;
 using Bookly.Domain.Models;
 using Bookly.Infrastructure;
@@ -7,7 +8,9 @@ using Core;
 using Core.Dto.User;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using NSubstitute;
+using Serilog;
 
 namespace Bookly.Tests.Application.Handlers.Users;
 
@@ -16,12 +19,23 @@ public class RegistrationHandlerTests
 {
     private BooklyDbContext _db = null!;
     private IMediator _mediator = null!;
+    private IConfiguration _configuration = null!;
 
     [SetUp]
     public void Setup()
     {
         _db = DatabaseUtils.CreateDbContext();
         _mediator = Substitute.For<IMediator>();
+        _mediator.Publish(Arg.Any<UserCreatedEvent>(), Arg.Any<CancellationToken>())
+            .Returns(ci =>
+            {
+                var evt = ci.Arg<UserCreatedEvent>();
+                var handler = new CreateStaticBookCollectionsForUserEventHandler(_db, Substitute.For<ILogger>());
+                return handler.Handle(evt, CancellationToken.None);
+            });
+        _configuration = Substitute.For<IConfiguration>();
+        _configuration[Const.JwtSecretKey]
+            .Returns("aaaaaaaaaabbbbbbbbbbbbbbcccccccccccmmmmmmmmmmmwwwwwwwwwwwffgsdgsdg");
     }
 
     [TearDown]
@@ -39,7 +53,7 @@ public class RegistrationHandlerTests
         await _db.SaveChangesAsync();
 
         var dto = new RegistrationRequestDto("existing_user", "another@mail.com", "pwd123!");
-        var handler = new RegistrationHandler(_mediator, _db);
+        var handler = new RegistrationHandler(_mediator, _db, _configuration);
 
         // Act
         var result = await handler.Handle(new RegistrationCommand(dto), CancellationToken.None);
@@ -59,7 +73,7 @@ public class RegistrationHandlerTests
         await _db.SaveChangesAsync();
 
         var dto = new RegistrationRequestDto("new_login", "USED@mail.com", "pwd123!");
-        var handler = new RegistrationHandler(_mediator, _db);
+        var handler = new RegistrationHandler(_mediator, _db, _configuration);
 
         // Act
         var result = await handler.Handle(new RegistrationCommand(dto), CancellationToken.None);
@@ -77,7 +91,7 @@ public class RegistrationHandlerTests
         _mediator.Send(Arg.Any<HashPasswordCommand>(), Arg.Any<CancellationToken>())
             .Returns(Result<string>.Failure("ошибка хеша"));
 
-        var handler = new RegistrationHandler(_mediator, _db);
+        var handler = new RegistrationHandler(_mediator, _db, _configuration);
 
         // Act
         var result = await handler.Handle(new RegistrationCommand(dto), CancellationToken.None);
@@ -96,7 +110,7 @@ public class RegistrationHandlerTests
         _mediator.Send(Arg.Any<HashPasswordCommand>(), Arg.Any<CancellationToken>())
             .Returns(Result<string>.Success("hash123"));
 
-        var handler = new RegistrationHandler(_mediator, _db);
+        var handler = new RegistrationHandler(_mediator, _db, _configuration);
 
         // Act
         var result = await handler.Handle(new RegistrationCommand(dto), CancellationToken.None);
@@ -114,7 +128,7 @@ public class RegistrationHandlerTests
         _mediator.Send(Arg.Any<HashPasswordCommand>(), Arg.Any<CancellationToken>())
             .Returns(Result<string>.Success("hashed_pwd"));
 
-        var handler = new RegistrationHandler(_mediator, _db);
+        var handler = new RegistrationHandler(_mediator, _db, _configuration);
 
         // Act
         var result = await handler.Handle(new RegistrationCommand(dto), CancellationToken.None);

@@ -20,11 +20,13 @@ public class Book : Entity<Guid>
     public DateTime CreatedAt { get; private set; }
     
     private List<Genre> _genres = [];
+    private List<BookCollection> _bookCollections = [];
     private List<Author> _authors = [];
 
     public Publisher Publisher { get; private set; }
     public IReadOnlyCollection<Genre> Genres => _genres;
     public IReadOnlyCollection<Author> Authors => _authors;
+    public IReadOnlyCollection<BookCollection>  BookCollections => _bookCollections;
 
     public static Result<Book> Create(CreateBookDto createBookDto)
     {

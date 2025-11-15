@@ -3,9 +3,11 @@ using Bookly.Application.Handlers.Auth;
 using Bookly.Application.Handlers.Files;
 using Bookly.Application.Services.Passwords;
 using Bookly.Domain.Models;
+using Core;
 using Core.Dto.User;
 using Core.Options;
 using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using NSubstitute;
 
@@ -15,6 +17,7 @@ namespace Bookly.Tests.Application.Handlers.Users;
 public class AuthenthicationHandlerTests
 {
     private IMediator _mediator = null!;
+    private IConfiguration _configuration = null!;
     private ILoginChain _loginChain = null!;
     private IPasswordHasher _passwordHasher = null!;
     private IOptionsSnapshot<BooklyOptions> _options = null!;
@@ -32,6 +35,9 @@ public class AuthenthicationHandlerTests
         _passwordHasher = Substitute.For<IPasswordHasher>();
         _options = Substitute.For<IOptionsSnapshot<BooklyOptions>>();
         _options.Value.Returns(DefaultOptions);
+        _configuration = Substitute.For<IConfiguration>();
+        _configuration[Const.JwtSecretKey]
+            .Returns("aaaaaaaaaabbbbbbbbbbbbbbcccccccccccmmmmmmmmmmmwwwwwwwwwwwffgsdgsdg");
     }
 
     [Test]
@@ -43,7 +49,7 @@ public class AuthenthicationHandlerTests
         _loginChain.FindUserByLoginAsync("notfound", Arg.Any<CancellationToken>())
             .Returns((User?)null);
 
-        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options);
+        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options, _configuration);
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -65,7 +71,7 @@ public class AuthenthicationHandlerTests
             .Returns(user);
         _passwordHasher.Verify("badpwd", "hash123").Returns(false);
 
-        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options);
+        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options, _configuration);
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -89,7 +95,7 @@ public class AuthenthicationHandlerTests
         _mediator.Send(Arg.Any<GetPresignedUrlQuery>(), Arg.Any<CancellationToken>())
             .Returns(expectedUrl);
 
-        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options);
+        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options, _configuration);
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -122,7 +128,7 @@ public class AuthenthicationHandlerTests
         _mediator.Send(Arg.Any<GetPresignedUrlQuery>(), Arg.Any<CancellationToken>())
             .Returns(""); // внутри handler пустая ссылка возможна
 
-        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options);
+        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options, _configuration);
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);
@@ -149,7 +155,7 @@ public class AuthenthicationHandlerTests
         _mediator.Send(Arg.Any<GetPresignedUrlQuery>(), Arg.Any<CancellationToken>())
             .Returns(expectedUrl);
 
-        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options);
+        var handler = new AuthenthicationHandler(_mediator, _loginChain, _passwordHasher, _options, _configuration);
 
         // Act
         var result = await handler.Handle(request, CancellationToken.None);

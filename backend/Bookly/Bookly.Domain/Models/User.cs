@@ -20,13 +20,18 @@ public class User : Entity<Guid>
     
     private readonly List<UserGenrePreference> _userGenrePreferences = [];
     private readonly List<UserAuthorPreference> _userAuthorPreferences = [];
+    private readonly List<BookCollection> _booksCollections = [];
     
     public IReadOnlyCollection<UserGenrePreference> UserGenrePreferences => _userGenrePreferences;
     public IReadOnlyCollection<UserAuthorPreference> UserAuthorPreferences => _userAuthorPreferences;
+    public IReadOnlyCollection<BookCollection> BookCollections => _booksCollections;
 
     public static Result<User> Create(CreateUserDto createUserDto)
     {
-        var user = new User();
+        var user = new User()
+        {
+            Id = Guid.NewGuid()
+        };
         var loginRes = user.SetLogin(createUserDto.Login);
         if (loginRes.IsFailure) return Result<User>.Failure(loginRes.Error);
         var emailRes = user.SetEmail(createUserDto.Email);
