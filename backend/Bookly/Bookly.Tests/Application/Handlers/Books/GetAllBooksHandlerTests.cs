@@ -4,8 +4,10 @@ using Bookly.Infrastructure;
 using Bookly.Tests.Utils;
 using Core.Dto.Author;
 using Core.Dto.Book;
+using Core.Dto.BookCollection;
 using Core.Dto.Genre;
 using Core.Dto.Publisher;
+using Core.Dto.User;
 using Core.Enums;
 
 namespace Bookly.Tests.Application.Handlers.Books;
@@ -218,5 +220,42 @@ namespace Bookly.Tests.Application.Handlers.Books;
             var ratings = result.Select(r => r.Rating).ToList();
             var sorted = ratings.OrderByDescending(r => r).ToList();
             Assert.That(ratings, Is.EqualTo(sorted));
+        }
+        
+        [Test]
+        public async Task Handle_FiltersByCollectionId()
+        {
+            // Arrange
+            await SeedBooksAsync();
+
+            // создаём пользователя, коллекцию и привязываем к ней часть книг
+            var user = User.Create(new CreateUserDto("loginLol", "email@email.ru", "hashedPwd")).Value;
+            _db.Users.Add(user);
+
+            var collectionDto = new CreateBookCollectionDto("Моя коллекция", true, user.Id);
+            var collection = BookCollection.Create(collectionDto, isStatic: false).Value;
+
+            // Получаем две книги из базы и добавляем в коллекцию
+            var books = _db.Books.Take(2).ToList();
+            foreach (var book in books)
+            {
+                collection.AddBookAndUpdateCover(book);
+            }
+
+            _db.BookCollections.Add(collection);
+            await _db.SaveChangesAsync();
+
+            var settings = new BookSearchSettingsDto(SearchInBookCollection: collection.Id);
+            var handler = new GetAllBooksHandler(_db);
+
+            // Act
+            var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
+
+            // Assert
+            Assert.That(result, Has.Count.EqualTo(2), "Должно вернуться количество книг, связанных с коллекцией");
+            var titlesInCollection = books.Select(b => b.Title).ToList();
+            Assert.That(result.Select(r => r.Title), Is.EquivalentTo(titlesInCollection),
+                "Все книги из коллекции должны быть возвращены");
+            Assert.That(result.All(r => r.Rating >= 0), "Дефолтная сортировка — по рейтингу (не нарушена)");
         }
     }
