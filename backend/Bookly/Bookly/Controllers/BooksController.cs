@@ -1,4 +1,5 @@
 using Bookly.Application.Handlers.Books;
+using Bookly.Extensions;
 using Core.Dto.Book;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ public class BooksController(IMediator mediator) : ControllerBase
     [Route("")]
     public async Task<IActionResult> GetAllBooks([FromQuery] BookSearchSettingsDto bookSearchSettingsDto, CancellationToken cancellationToken)
     {
-        var books = await mediator.Send(new GetAllBooksQuery(bookSearchSettingsDto), cancellationToken);
+        var books = await mediator.Send(new GetAllBooksQuery(bookSearchSettingsDto, User.RetrieveUserId()), cancellationToken);
         return Ok(books);
     }
 
@@ -27,7 +28,7 @@ public class BooksController(IMediator mediator) : ControllerBase
     [Route("{id:guid}")]
     public async Task<IActionResult> GetBook([FromRoute] Guid id, CancellationToken cancellationToken)
     {
-        var book = await mediator.Send(new GetBookQuery(id), cancellationToken);
+        var book = await mediator.Send(new GetBookQuery(id, User.RetrieveUserId()), cancellationToken);
         if (book == null) return NotFound();
         return Ok(book);
     }

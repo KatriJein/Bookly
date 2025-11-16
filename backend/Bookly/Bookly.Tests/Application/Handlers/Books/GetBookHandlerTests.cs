@@ -7,6 +7,8 @@ using Core.Dto.Book;
 using Core.Dto.Genre;
 using Core.Dto.Publisher;
 using Core.Enums;
+using MediatR;
+using Moq;
 
 namespace Bookly.Tests.Application.Handlers.Books;
 
@@ -14,11 +16,13 @@ namespace Bookly.Tests.Application.Handlers.Books;
     public class GetBookHandlerTests
     {
         private BooklyDbContext _db = null!;
+        private IMediator _mediator = null!;
 
         [SetUp]
         public void Setup()
         {
             _db = DatabaseUtils.CreateDbContext();
+            _mediator = new Mock<IMediator>().Object;
         }
 
         [TearDown]
@@ -47,7 +51,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             _db.Books.Add(book);
             await _db.SaveChangesAsync();
 
-            var handler = new GetBookHandler(_db);
+            var handler = new GetBookHandler(_mediator, _db);
             var result = await handler.Handle(new GetBookQuery(book.Id), CancellationToken.None);
 
             Assert.That(result, Is.Not.Null);
@@ -62,7 +66,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         [Test]
         public async Task Handle_ReturnsNull_WhenBookDoesNotExist()
         {
-            var handler = new GetBookHandler(_db);
+            var handler = new GetBookHandler(_mediator, _db);
             var result = await handler.Handle(new GetBookQuery(Guid.NewGuid()), CancellationToken.None);
             Assert.That(result, Is.Null);
         }
@@ -86,7 +90,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             _db.Books.Add(book);
             await _db.SaveChangesAsync();
 
-            var handler = new GetBookHandler(_db);
+            var handler = new GetBookHandler(_mediator, _db);
             var dto = await handler.Handle(new GetBookQuery(book.Id), CancellationToken.None);
 
             Assert.That(dto, Is.Not.Null);

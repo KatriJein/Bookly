@@ -25,11 +25,7 @@ builder.Services.AddProblemDetails(c =>
 });
 builder.Services.AddHealthChecks();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(setup =>
-{
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    setup.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-});
+builder.Services.AddSwaggerGenWithAuthentication();
 builder.Services.AddHangfire(configuration =>
 {
     var booklyOptions = new BooklyOptions();

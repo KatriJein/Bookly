@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core;
 using Core.Dto.Book;
 using Core.Enums;
@@ -123,4 +124,7 @@ public class Book : Entity<Guid>
     {
         Publisher = publisher;
     }
+    
+    [NotMapped]
+    public bool IsFavorite { get; set; }
 }

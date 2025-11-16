@@ -27,7 +27,8 @@ public static class BookMapper
             book.PageCount,
             ageRestriction,
             book.Thumbnail,
-            book.CreatedAt
+            book.CreatedAt,
+            book.IsFavorite
         );
     }
 
@@ -43,7 +44,8 @@ public static class BookMapper
             book.PublishmentYear,
             book.Rating,
             genres,
-            book.Thumbnail
+            book.Thumbnail,
+            book.IsFavorite
         );
     }
 }

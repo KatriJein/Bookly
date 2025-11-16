@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookly.Application.Handlers.Books;
 
-public class GetBookHandler(BooklyDbContext booklyDbContext) : IRequestHandler<GetBookQuery, GetFullBookDto?>
+public class GetBookHandler(IMediator mediator, BooklyDbContext booklyDbContext) : IRequestHandler<GetBookQuery, GetFullBookDto?>
 {
     public async Task<GetFullBookDto?> Handle(GetBookQuery request, CancellationToken cancellationToken)
     {
@@ -15,8 +15,9 @@ public class GetBookHandler(BooklyDbContext booklyDbContext) : IRequestHandler<G
         await booklyDbContext.Entry(book).Collection(b => b.Genres).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Reference(b => b.Publisher).LoadAsync(cancellationToken);
+        await mediator.Send(new MarkFavoritesCommand([book], request.UserId), cancellationToken);
         return BookMapper.MapBookToFullDto(book);
     }
 }
 
-public record GetBookQuery(Guid Id) : IRequest<GetFullBookDto?>;
+public record GetBookQuery(Guid Id, Guid? UserId = null) : IRequest<GetFullBookDto?>;

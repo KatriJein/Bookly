@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Bookly.Application.Chains.LoginChain;
 using Bookly.Application.Chains.LoginChain.Handlers;
@@ -44,6 +45,37 @@ public static class ServiceCollectionExtensions
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = signingKey
             };
+        });
+        return services;
+    }
+
+    public static IServiceCollection AddSwaggerGenWithAuthentication(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(setup =>
+        {
+            var jwtScheme = new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+                Name = "Authorization",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+                Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+                Description = "Введите JWT токен в формате: Bearer {токен}",
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Id = JwtBearerDefaults.AuthenticationScheme,
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme
+                }
+            };
+
+            setup.AddSecurityDefinition(jwtScheme.Reference.Id, jwtScheme);
+
+            setup.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+            {
+                { jwtScheme, Array.Empty<string>() }
+            });
+            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            setup.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
         return services;
     }

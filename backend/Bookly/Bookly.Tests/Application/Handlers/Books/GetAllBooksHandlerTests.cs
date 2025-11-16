@@ -9,6 +9,8 @@ using Core.Dto.Genre;
 using Core.Dto.Publisher;
 using Core.Dto.User;
 using Core.Enums;
+using MediatR;
+using Moq;
 
 namespace Bookly.Tests.Application.Handlers.Books;
 
@@ -16,11 +18,13 @@ namespace Bookly.Tests.Application.Handlers.Books;
     public class GetAllBooksHandlerTests
     {
         private BooklyDbContext _db = null!;
+        private IMediator _mediator = null!;
 
         [SetUp]
         public void Setup()
         {
             _db = DatabaseUtils.CreateDbContext();
+            _mediator = new Mock<IMediator>().Object;
         }
 
         [TearDown]
@@ -66,7 +70,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto();
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -78,7 +82,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByTitle: "война");
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -91,7 +95,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByPublisher: "издательство 1");
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -103,7 +107,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByGenres: new[] { "Роман" });
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -115,7 +119,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByAuthors: new[] { "Толстой Л.Н." });
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -128,7 +132,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByRating: 4.5);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
             Assert.That(result.All(r => r.Rating >= 4.5));
@@ -139,7 +143,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByTitle: "война", SearchByAuthors: new[] { "Толстой Л.Н." });
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -157,7 +161,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
                 SearchByGenres: new[] { "Фантастика" }
             );
 
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
             Assert.That(result, Has.Count.EqualTo(1));
@@ -170,7 +174,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(BooksOrderOption: BooksOrderOption.ByTitleDescending);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
 
@@ -184,7 +188,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(BooksOrderOption: BooksOrderOption.ByRatingAscending);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
             var ratings = result.Select(r => r.Rating).ToList();
@@ -198,7 +202,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             await SeedBooksAsync();
             var settingsPage1 = new BookSearchSettingsDto(Limit: 2, Page: 1, BooksOrderOption: BooksOrderOption.ByTitleAscending);
             var settingsPage2 = new BookSearchSettingsDto(Limit: 2, Page: 2, BooksOrderOption: BooksOrderOption.ByTitleAscending);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var page1 = await handler.Handle(new GetAllBooksQuery(settingsPage1), CancellationToken.None);
             var page2 = await handler.Handle(new GetAllBooksQuery(settingsPage2), CancellationToken.None);
@@ -213,7 +217,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
         {
             await SeedBooksAsync();
             var settings = new BookSearchSettingsDto(SearchByGenres: new[] { "Роман" }, BooksOrderOption: BooksOrderOption.ByRatingDescending);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
             Assert.That(result.All(r => r.Genres.Select(g => g.DisplayName).Contains("Роман")));
@@ -246,7 +250,7 @@ namespace Bookly.Tests.Application.Handlers.Books;
             await _db.SaveChangesAsync();
 
             var settings = new BookSearchSettingsDto(SearchInBookCollection: collection.Id);
-            var handler = new GetAllBooksHandler(_db);
+            var handler = new GetAllBooksHandler(_mediator, _db);
 
             // Act
             var result = await handler.Handle(new GetAllBooksQuery(settings), CancellationToken.None);
