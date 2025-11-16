@@ -26,84 +26,94 @@ public class GetRatingHandlerTests
     }
 
     [Test]
-    public async Task Handle_ReturnsFailure_WhenUserDoesNotExist()
-    {
-        var handler = new GetRatingHandler<Book>(_db);
-        var query = new GetRatingQuery<Book>(
-            db => db.Books, Guid.NewGuid(), Guid.NewGuid());
-
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        Assert.That(result.IsFailure);
-        Assert.That(result.Error, Is.EqualTo("Несуществующий пользователь"));
-    }
-
-    [Test]
-    public async Task Handle_ReturnsFailure_WhenEntityDoesNotExist()
+    public async Task Handle_SetsUserRating_OnlyForEntitiesWithExistingRatings()
     {
         var userDto = new CreateUserDto("User", "u@mail.com", "hash");
         var user = User.Create(userDto).Value;
         _db.Users.Add(user);
+
+        var anotherUserDto = new CreateUserDto("Other", "x@mail.com", "hash");
+        var anotherUser = User.Create(anotherUserDto).Value;
+        _db.Users.Add(anotherUser);
+
+        var book1 = Book.Create(new CreateBookDto("Book1", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k1", Array.Empty<string>(), Array.Empty<string>())).Value;
+        var book2 = Book.Create(new CreateBookDto("Book2", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k2", Array.Empty<string>(), Array.Empty<string>())).Value;
+        var book3 = Book.Create(new CreateBookDto("Book3", "d", 0, 0, "ru", "Pub", 2021, 250,
+            AgeRestriction.Everyone, null, "k3", Array.Empty<string>(), Array.Empty<string>())).Value;
+
+        _db.Books.AddRange(book1, book2, book3);
+        await _db.SaveChangesAsync();
+
+        var rating1 = Rating.Create(user.Id, book1.Id, 4).Value;
+        var rating2 = Rating.Create(user.Id, book3.Id, 2).Value;
+        var foreignRating = Rating.Create(anotherUser.Id, book1.Id, 5).Value;
+        _db.Ratings.AddRange(rating1, rating2, foreignRating);
         await _db.SaveChangesAsync();
 
         var handler = new GetRatingHandler<Book>(_db);
-        var query = new GetRatingQuery<Book>(
-            db => db.Books, user.Id, Guid.NewGuid());
+        var query = new GetRatingQuery<Book>(new List<Book> { book1, book2, book3 }, user.Id);
 
-        var result = await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, CancellationToken.None);
 
-        Assert.That(result.IsFailure);
-        Assert.That(result.Error, Is.EqualTo("Несуществующая сущность"));
+        Assert.That(book1.UserRating, Is.EqualTo(4));
+        Assert.That(book2.UserRating, Is.Null, "У пользователя нет оценки для Book2");
+        Assert.That(book3.UserRating, Is.EqualTo(2));
     }
 
     [Test]
-    public async Task Handle_ReturnsNullRating_WhenNoUserRatingFound()
+    public async Task Handle_DoesNothing_WhenUserIdIsNull()
     {
-        var userDto = new CreateUserDto("User", "u@mail.com", "hash");
-        var user = User.Create(userDto).Value;
-        _db.Users.Add(user);
-
-        var bookDto = new CreateBookDto("Book", "desc", 4.5, 100, "ru", "Pub", 2020, 200,
-            AgeRestriction.Everyone, null, "k1", Array.Empty<string>(), Array.Empty<string>());
-        var book = Book.Create(bookDto).Value;
+        var book = Book.Create(new CreateBookDto("Any", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k4", Array.Empty<string>(), Array.Empty<string>())).Value;
         _db.Books.Add(book);
         await _db.SaveChangesAsync();
 
         var handler = new GetRatingHandler<Book>(_db);
-        var query = new GetRatingQuery<Book>(
-            db => db.Books, user.Id, book.Id);
+        var query = new GetRatingQuery<Book>(new List<Book> { book }, null);
 
-        var result = await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, CancellationToken.None);
 
-        Assert.That(result.IsSuccess);
-        Assert.That(result.Value, Is.Null);
+        Assert.That(book.UserRating, Is.Null);
     }
 
     [Test]
-    public async Task Handle_ReturnsRating_WhenUserRatingExists()
+    public async Task Handle_DoesNothing_WhenUserNotFound()
     {
-        var userDto = new CreateUserDto("User", "u@mail.com", "hash");
-        var user = User.Create(userDto).Value;
-        _db.Users.Add(user);
-
-        var bookDto = new CreateBookDto("BookName", "desc", 4.2, 150, "ru", "Pub", 2020, 300,
-            AgeRestriction.Everyone, null, "k2", Array.Empty<string>(), Array.Empty<string>());
-        var book = Book.Create(bookDto).Value;
+        var book = Book.Create(new CreateBookDto("Book", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k5", Array.Empty<string>(), Array.Empty<string>())).Value;
         _db.Books.Add(book);
         await _db.SaveChangesAsync();
 
-        var rating = Rating.Create(user.Id, book.Id, 5).Value;
-        _db.Ratings.Add(rating);
+        var handler = new GetRatingHandler<Book>(_db);
+        var query = new GetRatingQuery<Book>(new List<Book> { book }, Guid.NewGuid());
+
+        await handler.Handle(query, CancellationToken.None);
+
+        Assert.That(book.UserRating, Is.Null);
+    }
+
+    [Test]
+    public async Task Handle_NoRatingsExist_LeavesAllUserRatingsNull()
+    {
+        var userDto = new CreateUserDto("UserNoRatings", "z@mail.com", "hash");
+        var user = User.Create(userDto).Value;
+        _db.Users.Add(user);
+
+        var book1 = Book.Create(new CreateBookDto("Book1", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k6", Array.Empty<string>(), Array.Empty<string>())).Value;
+        var book2 = Book.Create(new CreateBookDto("Book2", "d", 0, 0, "ru", "Pub", 2020, 200,
+            AgeRestriction.Everyone, null, "k7", Array.Empty<string>(), Array.Empty<string>())).Value;
+        _db.Books.AddRange(book1, book2);
         await _db.SaveChangesAsync();
 
         var handler = new GetRatingHandler<Book>(_db);
-        var query = new GetRatingQuery<Book>(
-            db => db.Books, user.Id, book.Id);
+        var query = new GetRatingQuery<Book>(new List<Book> { book1, book2 }, user.Id);
 
-        var result = await handler.Handle(query, CancellationToken.None);
+        await handler.Handle(query, CancellationToken.None);
 
-        Assert.That(result.IsSuccess);
-        Assert.That(result.Value, Is.Not.Null);
-        Assert.That(result.Value.Rating, Is.EqualTo(5));
+        Assert.That(book1.UserRating, Is.Null);
+        Assert.That(book2.UserRating, Is.Null);
     }
 }

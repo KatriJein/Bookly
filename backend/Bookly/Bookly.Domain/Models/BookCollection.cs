@@ -75,7 +75,4 @@ public class BookCollection : RateableEntity
         else
             SetCoverUrl(_books[^1].Thumbnail);
     }
-    
-    [NotMapped]
-    public int? UserRating { get; set; }
 }

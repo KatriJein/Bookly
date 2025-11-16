@@ -7,21 +7,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookly.Application.Handlers.Ratings;
 
-public class GetRatingHandler<T>(BooklyDbContext booklyDbContext) : IRequestHandler<GetRatingQuery<T>, Result<RatingDto?>> where T : RateableEntity
+public class GetRatingHandler<T>(BooklyDbContext booklyDbContext) : IRequestHandler<GetRatingQuery<T>> where T : RateableEntity
 {
-    public async Task<Result<RatingDto?>> Handle(GetRatingQuery<T> request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(GetRatingQuery<T> request, CancellationToken cancellationToken)
     {
-        if (request.UserId is null) return Result<RatingDto?>.Failure("Не указан UserId для получения оценки пользователя");
+        if (request.UserId is null) return Unit.Value;
         var user = await booklyDbContext.Users.FirstOrDefaultAsync(u => u.Id == request.UserId, cancellationToken);
-        if (user is null) return Result<RatingDto?>.Failure("Несуществующий пользователь");
-        var entities = request.EntitiesFunc(booklyDbContext);
-        var entity = await entities.FirstOrDefaultAsync(e => e.Id == request.EntityId, cancellationToken);
-        if (entity is null) return Result<RatingDto?>.Failure("Несуществующая сущность");
-        var rating = await booklyDbContext.Ratings.FirstOrDefaultAsync(r => r.EntityId == request.EntityId &&
-                                                                            r.UserId == request.UserId, cancellationToken);
-        return rating is null ? Result<RatingDto?>.Success(null) : Result<RatingDto?>.Success(new RatingDto(rating.Value));
+        if (user is null) return Unit.Value;
+        var entitiesIds = request.Entities.Select(e => e.Id).ToHashSet();
+        var ratings = await booklyDbContext.Ratings
+            .Where(r => entitiesIds.Contains(r.EntityId) && r.UserId == request.UserId)
+            .ToDictionaryAsync(r => r.EntityId, r => r.Value, cancellationToken);
+        foreach (var entity in request.Entities)
+        {
+            if (ratings.TryGetValue(entity.Id, out var rating))
+                entity.UserRating = rating;
+        }
+        return Unit.Value;
     }
 }
 
-public record GetRatingQuery<T>(Func<BooklyDbContext, DbSet<T>> EntitiesFunc, Guid? UserId, Guid EntityId) : IRequest<Result<RatingDto?>>
+public record GetRatingQuery<T>(List<T> Entities, Guid? UserId) : IRequest
 where T : RateableEntity;

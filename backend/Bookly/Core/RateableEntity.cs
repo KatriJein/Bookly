@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core.Interfaces;
 
 namespace Core;
@@ -16,4 +17,7 @@ public abstract class RateableEntity : Entity<Guid>, IRateable
         if (RatingsCount == 0) return;
         Rating = (Rating * RatingsCount - oldValue + newValue) / RatingsCount;
     }
+    
+    [NotMapped]
+    public int? UserRating { get; set; }
 }

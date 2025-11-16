@@ -18,7 +18,7 @@ public class GetBookHandler(IMediator mediator, BooklyDbContext booklyDbContext)
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Reference(b => b.Publisher).LoadAsync(cancellationToken);
         await mediator.Send(new MarkFavoritesCommand([book], request.UserId), cancellationToken);
-        await mediator.Send(new GetRatingQuery<Book>(db => db.Books, request.UserId, book.Id), cancellationToken);
+        await mediator.Send(new GetRatingQuery<Book>([book], request.UserId), cancellationToken);
         return BookMapper.MapBookToFullDto(book);
     }
 }

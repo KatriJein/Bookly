@@ -1,4 +1,5 @@
 using Bookly.Application.Handlers.Files;
+using Bookly.Application.Handlers.Ratings;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
 using Bookly.Infrastructure;
@@ -43,6 +44,8 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
                 request.BookCollectionSearchSettingsDto.Limit)
             .ToListAsync(cancellationToken);
         
+        await mediator.Send(new GetRatingQuery<BookCollection>(collections, request.RetrievedUserId), cancellationToken);
+        
         var tasks = collections.Select(async b =>
         {
             var avatarUrl = await mediator.Send(
@@ -83,6 +86,7 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
             .RetrieveNextPage(request.BookCollectionSearchSettingsDto.Page,
                 request.BookCollectionSearchSettingsDto.Limit)
             .ToListAsync(cancellationToken);
+        await mediator.Send(new GetRatingQuery<BookCollection>(collections, request.RetrievedUserId), cancellationToken);
         var collectionsDto = collections.Select(b =>
             new GetBookCollectionDto(
                 b.Id,
@@ -101,5 +105,6 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
     }
 }
 
-public record GetBookCollectionsQuery(BookCollectionSearchSettingsDto BookCollectionSearchSettingsDto, Guid? UserId) : 
+public record GetBookCollectionsQuery(BookCollectionSearchSettingsDto BookCollectionSearchSettingsDto, Guid? UserId,
+    Guid? RetrievedUserId = null) : 
     IRequest<List<GetBookCollectionDto>>;

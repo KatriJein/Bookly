@@ -126,6 +126,4 @@ public class Book : RateableEntity
     
     [NotMapped]
     public bool IsFavorite { get; set; }
-    [NotMapped]
-    public int? UserRating { get; set; }
 }

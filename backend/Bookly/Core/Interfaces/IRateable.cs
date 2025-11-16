@@ -7,4 +7,5 @@ public interface IRateable
     int RatingsCount { get; }
     void AddNewRating(int newValue);
     void RefreshRating(int oldValue, int newValue);
+    int? UserRating { get; set; }
 }

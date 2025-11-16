@@ -22,7 +22,8 @@ public class BookCollectionsController(IMediator mediator) : ControllerBase
     [Route("")]
     public async Task<IActionResult> GetAll([FromQuery] BookCollectionSearchSettingsDto bookCollectionSearchSettingsDto, CancellationToken cancellationToken)
     {
-        var collections = await mediator.Send(new GetBookCollectionsQuery(bookCollectionSearchSettingsDto, null), cancellationToken);
+        var collections = await mediator.Send(new GetBookCollectionsQuery(bookCollectionSearchSettingsDto, null,
+            User.RetrieveUserId()), cancellationToken);
         return Ok(collections);
     }
     
@@ -34,7 +35,8 @@ public class BookCollectionsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetAll([FromRoute] Guid userId, [FromQuery] BookCollectionSearchSettingsDto bookCollectionSearchSettingsDto,
         CancellationToken cancellationToken)
     {
-        var collections = await mediator.Send(new GetBookCollectionsQuery(bookCollectionSearchSettingsDto, userId), cancellationToken);
+        var collections = await mediator.Send(new GetBookCollectionsQuery(bookCollectionSearchSettingsDto, userId,
+            User.RetrieveUserId()), cancellationToken);
         return Ok(collections);
     }
 
