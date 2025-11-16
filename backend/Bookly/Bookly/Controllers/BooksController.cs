@@ -1,6 +1,9 @@
 using Bookly.Application.Handlers.Books;
+using Bookly.Application.Handlers.Ratings;
+using Bookly.Domain.Models;
 using Bookly.Extensions;
 using Core.Dto.Book;
+using Core.Dto.Rating;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +47,19 @@ public class BooksController(IMediator mediator) : ControllerBase
         if (res.IsFailure) return BadRequest(res.Error);
         return Created("/books", res.Value);
     }
-
+    
+    /// <summary>
+    /// Оценить книгу
+    /// </summary>
+    [HttpPost]
+    [Route("{id:guid}/rate")]
+    public async Task<IActionResult> Rate([FromRoute] Guid id, [FromBody] RatingDto ratingDto)
+    {
+        var res = await mediator.Send(
+            new AddOrUpdateRatingCommand<Book>(db => db.Books, id, User.RetrieveUserId(), ratingDto.Rating));
+        return res.IsSuccess ? NoContent() : BadRequest(res.Error);
+    }
+    
     /// <summary>
     /// Удалить книгу
     /// </summary>

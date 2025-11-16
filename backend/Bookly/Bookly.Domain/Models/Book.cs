@@ -2,15 +2,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Core;
 using Core.Dto.Book;
 using Core.Enums;
+using Core.Interfaces;
 
 namespace Bookly.Domain.Models;
 
-public class Book : Entity<Guid>
+public class Book : RateableEntity
 {
     public string Title { get; private set; }
     public string? Description { get; private set; }
-    public double Rating { get; private set; }
-    public int RatingsCount { get; private set; }
     public string Language { get; private set; }
     public int? PublishmentYear { get; private set; }
     public int PageCount { get; private set; }
@@ -127,4 +126,6 @@ public class Book : Entity<Guid>
     
     [NotMapped]
     public bool IsFavorite { get; set; }
+    [NotMapped]
+    public int? UserRating { get; set; }
 }

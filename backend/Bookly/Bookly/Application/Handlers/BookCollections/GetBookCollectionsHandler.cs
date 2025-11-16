@@ -65,7 +65,8 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
                 b.RatingsCount,
                 userInfo,
                 b.Books.Count,
-                b.UserId);
+                b.UserId,
+                b.UserRating);
         }).ToArray();
 
         return (await Task.WhenAll(tasks)).ToList();
@@ -93,7 +94,8 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
                 b.RatingsCount,
                 new GetShortUserDto(request.UserId!.Value, b.User.Login.Value, b.User.AvatarKey),
                 b.Books.Count,
-                b.UserId)
+                b.UserId,
+                b.UserRating)
         ).ToList();
         return collectionsDto;
     }

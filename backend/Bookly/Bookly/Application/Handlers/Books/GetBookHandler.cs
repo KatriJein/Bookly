@@ -1,4 +1,6 @@
+using Bookly.Application.Handlers.Ratings;
 using Bookly.Application.Mappers;
+using Bookly.Domain.Models;
 using Bookly.Infrastructure;
 using Core.Dto.Book;
 using MediatR;
@@ -16,6 +18,7 @@ public class GetBookHandler(IMediator mediator, BooklyDbContext booklyDbContext)
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Reference(b => b.Publisher).LoadAsync(cancellationToken);
         await mediator.Send(new MarkFavoritesCommand([book], request.UserId), cancellationToken);
+        await mediator.Send(new GetRatingQuery<Book>(db => db.Books, request.UserId, book.Id), cancellationToken);
         return BookMapper.MapBookToFullDto(book);
     }
 }

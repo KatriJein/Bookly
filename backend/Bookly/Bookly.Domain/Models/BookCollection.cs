@@ -1,17 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core;
 using Core.Dto.BookCollection;
+using Core.Interfaces;
 
 namespace Bookly.Domain.Models;
 
-public class BookCollection : Entity<Guid>
+public class BookCollection : RateableEntity
 {
     private readonly List<Book> _books = [];
     public string Title { get; private set; }
     public bool IsStatic { get; private set; }
     public bool IsPublic { get; private set; }
     public string? CoverUrl { get; private set; }
-    public double Rating { get; private set; }
-    public int RatingsCount { get; private set; }
     public Guid UserId { get; private set; }
     public User User { get; private set; }
 
@@ -75,4 +75,7 @@ public class BookCollection : Entity<Guid>
         else
             SetCoverUrl(_books[^1].Thumbnail);
     }
+    
+    [NotMapped]
+    public int? UserRating { get; set; }
 }

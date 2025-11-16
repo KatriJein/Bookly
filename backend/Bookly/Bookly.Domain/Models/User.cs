@@ -21,10 +21,12 @@ public class User : Entity<Guid>
     private readonly List<UserGenrePreference> _userGenrePreferences = [];
     private readonly List<UserAuthorPreference> _userAuthorPreferences = [];
     private readonly List<BookCollection> _booksCollections = [];
+    private readonly List<Rating> _ratings = [];
     
     public IReadOnlyCollection<UserGenrePreference> UserGenrePreferences => _userGenrePreferences;
     public IReadOnlyCollection<UserAuthorPreference> UserAuthorPreferences => _userAuthorPreferences;
     public IReadOnlyCollection<BookCollection> BookCollections => _booksCollections;
+    public IReadOnlyCollection<Rating> Ratings => _ratings;
 
     public static Result<User> Create(CreateUserDto createUserDto)
     {

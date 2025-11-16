@@ -45,7 +45,8 @@ public static class BookMapper
             book.Rating,
             genres,
             book.Thumbnail,
-            book.IsFavorite
+            book.IsFavorite,
+            book.UserRating
         );
     }
 }
