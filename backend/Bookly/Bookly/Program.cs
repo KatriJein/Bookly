@@ -1,7 +1,10 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Bookly.Application.Handlers.Ratings;
+using Bookly.Domain.Models;
 using Bookly.Extensions;
 using Bookly.Infrastructure;
+using Core;
 using Core.Options;
 using Hangfire;
 using Hangfire.PostgreSql;
@@ -39,6 +42,10 @@ builder.Services.AddHangfire(configuration =>
 builder.Services.AddHangfireServer();
 builder.Services.AddServices();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
+builder.Services.AddTransient<IRequestHandler<GetRatingQuery<Book>, Unit>, GetRatingHandler<Book>>();
+builder.Services.AddTransient<IRequestHandler<GetRatingQuery<BookCollection>, Unit>, GetRatingHandler<BookCollection>>();
+builder.Services.AddTransient<IRequestHandler<AddOrUpdateRatingCommand<Book>, Result>, AddOrUpdateRatingHandler<Book>>();
+builder.Services.AddTransient<IRequestHandler<AddOrUpdateRatingCommand<BookCollection>, Result>, AddOrUpdateRatingHandler<BookCollection>>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

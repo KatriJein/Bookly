@@ -28,7 +28,8 @@ public static class BookMapper
             ageRestriction,
             book.Thumbnail,
             book.CreatedAt,
-            book.IsFavorite
+            book.IsFavorite,
+            book.UserRating
         );
     }
 

@@ -1,4 +1,5 @@
 using Bookly.Application.Functions.Books;
+using Bookly.Application.Handlers.Ratings;
 using Bookly.Application.Mappers;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
@@ -28,6 +29,7 @@ public class GetAllBooksHandler(IMediator mediator, BooklyDbContext booklyDbCont
             .RetrieveNextPage(request.BookSearchSettingsDto.Page, request.BookSearchSettingsDto.Limit)
             .ToListAsync(cancellationToken);
         await mediator.Send(new MarkFavoritesCommand(books, request.UserId), cancellationToken);
+        await mediator.Send(new GetRatingQuery<Book>(books, request.UserId), cancellationToken);
         return books.Select(BookMapper.MapBookToShortBookDto).ToList();
     }
 

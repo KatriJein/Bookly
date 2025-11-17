@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookly.Application.Handlers.Ratings;
 
-public class GetRatingHandler<T>(BooklyDbContext booklyDbContext) : IRequestHandler<GetRatingQuery<T>> where T : RateableEntity
+public class GetRatingHandler<T>(BooklyDbContext booklyDbContext) : IRequestHandler<GetRatingQuery<T>, Unit> where T : RateableEntity
 {
     public async Task<Unit> Handle(GetRatingQuery<T> request, CancellationToken cancellationToken)
     {
