@@ -1,9 +1,11 @@
 using Bookly.Application.Handlers.Books;
 using Bookly.Application.Handlers.Ratings;
+using Bookly.Application.Handlers.Reviews;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
 using Core.Dto.Book;
 using Core.Dto.Rating;
+using Core.Dto.Review;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -34,6 +36,17 @@ public class BooksController(IMediator mediator) : ControllerBase
         var book = await mediator.Send(new GetBookQuery(id, User.RetrieveUserId()), cancellationToken);
         if (book == null) return NotFound();
         return Ok(book);
+    }
+    
+    /// <summary>
+    /// Получить все отзывы к книге
+    /// </summary>
+    [HttpGet]
+    [Route("{id:guid}/reviews")]
+    public async Task<IActionResult> GetReviews([FromQuery] ReviewSearchSettingsDto reviewSearchSettingsDto, [FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var reviews = await mediator.Send(new GetReviewsQuery(reviewSearchSettingsDto, id, User.RetrieveUserId()), cancellationToken);
+        return Ok(reviews);
     }
     
     /// <summary>

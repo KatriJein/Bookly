@@ -1,7 +1,11 @@
+using Bookly.Application.Handlers.Reviews;
 using Bookly.Application.Handlers.Users;
+using Bookly.Extensions;
 using Core.Dto.File;
+using Core.Dto.Review;
 using Core.Dto.User;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Bookly.Controllers;
@@ -42,6 +46,18 @@ public class UsersController(IMediator mediator) : ControllerBase
     {
         var user = await mediator.Send(new GetFullUserQuery(id), cancellationToken);
         return Ok(user);
+    }
+    
+    /// <summary>
+    /// Получить все свои отзывы
+    /// </summary>
+    [HttpGet]
+    [Authorize]
+    [Route("reviews")]
+    public async Task<IActionResult> GetReviews([FromQuery] ReviewSearchSettingsDto reviewSearchSettingsDto, CancellationToken cancellationToken)
+    {
+        var reviews = await mediator.Send(new GetReviewsQuery(reviewSearchSettingsDto, null, User.RetrieveUserId()), cancellationToken);
+        return Ok(reviews);
     }
     
     /// <summary>

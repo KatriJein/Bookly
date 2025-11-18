@@ -22,11 +22,13 @@ public class Book : RateableEntity
     private List<Genre> _genres = [];
     private List<BookCollection> _bookCollections = [];
     private List<Author> _authors = [];
+    private List<Review> _reviews = [];
 
     public Publisher Publisher { get; private set; }
     public IReadOnlyCollection<Genre> Genres => _genres;
     public IReadOnlyCollection<Author> Authors => _authors;
     public IReadOnlyCollection<BookCollection>  BookCollections => _bookCollections;
+    public IReadOnlyCollection<Review> Reviews => _reviews;
 
     public static Result<Book> Create(CreateBookDto createBookDto)
     {
