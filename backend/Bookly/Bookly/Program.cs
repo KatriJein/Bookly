@@ -18,6 +18,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<BooklyOptions>(builder.Configuration);
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 builder.Services.AddBooklyDbContext(builder.Configuration);
+builder.Services.AddCors(setup =>
+{
+    setup.AddDefaultPolicy(config =>
+    {
+        config
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 builder.Services.AddJwtAuthenthication(builder.Configuration);
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -53,6 +63,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHangfireDashboard();
