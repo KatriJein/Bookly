@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  bookly_main:
+    image: booklymain:dev
+    build:
+      context: .
+      dockerfile: Bookly/Dockerfile
+    

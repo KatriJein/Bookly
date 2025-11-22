@@ -1,0 +1,84 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+config
+credentials
+
+# Rider / IntelliJ specific
+.idea/
+*.sln.iml
+.idea/.idea.*
+.idea/httpRequests/
+.ideaKeyStores/
+.ideaDataSources/
+.ideaWebResources/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Visual Studio specific (на случай, если кто-то откроет проект VS)
+.vs/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/*
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# MSBuild binary and log files
+*.log
+*.tlog
+*.cache
+*.g.cs
+*.g.i.cs
+
+# Azure settings
+PublishProfiles/
+*.azurePubxml
+*.pubxml.user
+*.pubxml
+
+# DotCover (анализ покрытия кода JetBrains)
+.idea/.dotCover
+
+# Rider local history
+.idea/shelf/
+.idea/workspace.xml
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# Resharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Database files
+*.mdf
+*.ldf
+*.db
+
+# Environment settings
+.env
+.env.*
+
+# Rider-generated HTTP Client requests
+*.http
+
+# JetBrains service directories
+.idea/.fleet/
+.idea/.dataSources/
+.idea/.gradle/
