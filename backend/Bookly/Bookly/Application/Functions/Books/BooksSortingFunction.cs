@@ -1,6 +1,8 @@
 using Bookly.Domain.Models;
+using Bookly.Extensions;
 using Core.Enums;
 using Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookly.Application.Functions.Books;
 

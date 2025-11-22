@@ -1,3 +1,4 @@
+using Core;
 using Core.Interfaces;
 
 namespace Bookly.Extensions;
@@ -19,5 +20,21 @@ public static class IQueryableExtensions
     public static IQueryable<T> ApplySortingForItems<T>(this IQueryable<T> items, ISortingFunction<T> sortingFunction) where T : class
     {
         return sortingFunction.Apply(items);
+    }
+
+    public static IQueryable<T> OrderItemsByDescendingWeightedRatings<T>(this IQueryable<T> items, double averageEntitiesRating) where T: RateableEntity
+    {
+        return items
+            .OrderByDescending(i =>
+                ((double)i.RatingsCount / (i.RatingsCount + Const.TrustedRatingsCount)) * i.Rating +
+                ((double)Const.TrustedRatingsCount / (i.RatingsCount + Const.TrustedRatingsCount)) * averageEntitiesRating);
+    }
+    
+    public static IOrderedQueryable<T> OrderItemsThenByDescendingWeightedRatings<T>(this IOrderedQueryable<T> items, double averageEntitiesRating) where T: RateableEntity
+    {
+        return items
+            .OrderByDescending(i =>
+                ((double)i.RatingsCount / (i.RatingsCount + Const.TrustedRatingsCount)) * i.Rating +
+                ((double)Const.TrustedRatingsCount / (i.RatingsCount + Const.TrustedRatingsCount)) * averageEntitiesRating);
     }
 }

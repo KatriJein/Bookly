@@ -126,6 +126,7 @@ public class Book : RateableEntity
         Publisher = publisher;
     }
     
-    [NotMapped]
-    public bool IsFavorite { get; set; }
+    [NotMapped] public bool IsFavorite { get; set; }
+
+    [NotMapped] public double SimilarityWeight { get; set; }
 }

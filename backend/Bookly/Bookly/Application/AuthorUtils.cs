@@ -60,6 +60,11 @@ public static partial class AuthorUtils
         };
     }
 
+    public static string NormalizedThreeWordsAuthorNameToTwoWords(string authorName) => authorName[..^2];
+
     [GeneratedRegex(@"\.\s+([А-ЯA-Z])\.", RegexOptions.IgnoreCase)]
     private static partial Regex RemoveSpacesRegex();
+
+    [GeneratedRegex(@"^[А-ЯЁ][а-яё]+\s[А-ЯЁ]\.[А-ЯЁ]\.$")]
+    public static partial Regex NormalizedThreeWordsAuthorNameRegex();
 }

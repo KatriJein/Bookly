@@ -9,4 +9,9 @@ public static class Const
     public static HashSet<string> SupportedAvatarFileExtensions => [".jpg", ".png", ".gif", ".jpeg"];
     
     public static string BooksApiScrapingJob => "BooksApiScrapingJob";
+
+    public const int TrustedRatingsCount = 10;
+    public const int ShortBookMaxPagesCount = 200;
+    public const int MediumBookMaxPagesCount = 500;
+    public const int LongBookMaxPagesCount = 800;
 }

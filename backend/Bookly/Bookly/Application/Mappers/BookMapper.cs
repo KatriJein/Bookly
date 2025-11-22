@@ -37,6 +37,7 @@ public static class BookMapper
     {
         var authors = book.Authors.Select(a => new GetAuthorDto(a.Id, a.Name, a.DisplayName)).ToArray();
         var genres = book.Genres.Select(g => new GetGenreDto(g.Id, g.Name, g.DisplayName)).ToArray();
+        var ageRestriction = EnumMapper.MapAgeRestrictionEnumToString(book.AgeRestriction);
         return new GetShortBookDto
         (
             book.Id,
@@ -46,6 +47,8 @@ public static class BookMapper
             book.Rating,
             genres,
             book.Thumbnail,
+            book.Language,
+            ageRestriction,
             book.IsFavorite,
             book.UserRating
         );

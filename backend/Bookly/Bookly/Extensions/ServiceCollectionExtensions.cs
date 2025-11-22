@@ -2,14 +2,18 @@ using System.Reflection;
 using System.Text;
 using Bookly.Application.Chains.LoginChain;
 using Bookly.Application.Chains.LoginChain.Handlers;
+using Bookly.Application.Handlers.Rateable;
+using Bookly.Application.Handlers.Ratings;
 using Bookly.Application.Hangfire;
 using Bookly.Application.Services;
 using Bookly.Application.Services.ApiScrapers;
 using Bookly.Application.Services.Files;
 using Bookly.Application.Services.Passwords;
+using Bookly.Domain.Models;
 using Bookly.Infrastructure;
 using Core;
 using Core.Options;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -89,6 +93,18 @@ public static class ServiceCollectionExtensions
         services.AddHostedService<GenresSeedService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddLoginChain();
+        return services;
+    }
+
+    public static IServiceCollection AddGenericMediatRHandlers(this IServiceCollection services)
+    {
+        services.AddTransient<IRequestHandler<GetRatingQuery<Book>, Unit>, GetRatingHandler<Book>>();
+        services.AddTransient<IRequestHandler<GetRatingQuery<BookCollection>, Unit>, GetRatingHandler<BookCollection>>();
+        services.AddTransient<IRequestHandler<AddOrUpdateRatingCommand<Book>, Result>, AddOrUpdateRatingHandler<Book>>();
+        services.AddTransient<IRequestHandler<AddOrUpdateRatingCommand<BookCollection>, Result>, AddOrUpdateRatingHandler<BookCollection>>();
+        services.AddTransient<IRequestHandler<CalculateAverageRatingQuery<Book>, double>, CalculateAverageRatingHandler<Book>>();
+        services.AddTransient<IRequestHandler<CalculateAverageRatingQuery<BookCollection>, double>,
+            CalculateAverageRatingHandler<BookCollection>>();
         return services;
     }
 

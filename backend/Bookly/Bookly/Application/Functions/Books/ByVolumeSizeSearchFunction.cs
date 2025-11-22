@@ -1,4 +1,5 @@
 using Bookly.Domain.Models;
+using Core;
 using Core.Enums;
 using Core.Interfaces;
 
@@ -11,10 +12,10 @@ public class ByVolumeSizeSearchFunction(VolumeSizePreference? volumeSizePreferen
         if (volumeSizePreference is null) return items;
         return volumeSizePreference switch
         {
-            VolumeSizePreference.Short => items.Where(b => b.PageCount < 200),
-            VolumeSizePreference.Medium => items.Where(b => b.PageCount >= 200 && b.PageCount < 500),
-            VolumeSizePreference.Long => items.Where(b => b.PageCount >= 500 && b.PageCount < 800),
-            VolumeSizePreference.VeryLong => items.Where(b => b.PageCount >= 800),
+            VolumeSizePreference.Short => items.Where(b => b.PageCount < Const.ShortBookMaxPagesCount),
+            VolumeSizePreference.Medium => items.Where(b => b.PageCount >= Const.ShortBookMaxPagesCount && b.PageCount < Const.MediumBookMaxPagesCount),
+            VolumeSizePreference.Long => items.Where(b => b.PageCount >= Const.MediumBookMaxPagesCount && b.PageCount < Const.LongBookMaxPagesCount),
+            VolumeSizePreference.VeryLong => items.Where(b => b.PageCount >= Const.LongBookMaxPagesCount),
             _ => items
         };
     }

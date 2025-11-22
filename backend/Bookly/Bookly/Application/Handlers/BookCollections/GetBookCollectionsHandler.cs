@@ -1,4 +1,5 @@
 using Bookly.Application.Handlers.Files;
+using Bookly.Application.Handlers.Rateable;
 using Bookly.Application.Handlers.Ratings;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
@@ -17,8 +18,6 @@ namespace Bookly.Application.Handlers.BookCollections;
 public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext booklyDbContext, IOptionsSnapshot<BooklyOptions> booklyOptions)
     : IRequestHandler<GetBookCollectionsQuery, List<GetBookCollectionDto>>
 {
-    private const int TrustedRatingsCount = 10;
-    
     public async Task<List<GetBookCollectionDto>> Handle(GetBookCollectionsQuery request, CancellationToken cancellationToken)
     {
         List<GetBookCollectionDto> collections = request.UserId is null
@@ -30,16 +29,13 @@ public class GetBookCollectionsHandler(IMediator mediator, BooklyDbContext bookl
 
     private async Task<List<GetBookCollectionDto>> GetCommonBookCollectionsList(GetBookCollectionsQuery request, CancellationToken cancellationToken)
     {
-        var collectionsRating = await booklyDbContext.BookCollections
-            .Where(bc => bc.RatingsCount > 0)
-            .Select(bc => bc.Rating)
-            .ToListAsync(cancellationToken);
-        var averageCollectionsRating = collectionsRating.Count == 0 ? 0 :  collectionsRating.Average();
+        var averageCollectionsRating = await mediator.Send(new CalculateAverageRatingQuery<BookCollection>(booklyDbContext.BookCollections),
+            cancellationToken);
         var collections = await booklyDbContext.BookCollections
             .Where(bc => bc.IsPublic && !bc.IsStatic)
             .Include(bc => bc.Books)
             .Include(bc => bc.User)
-            .OrderByDescending(bc => (bc.Rating * bc.RatingsCount + averageCollectionsRating * TrustedRatingsCount) / (bc.RatingsCount + TrustedRatingsCount))
+            .OrderItemsByDescendingWeightedRatings(averageCollectionsRating)
             .RetrieveNextPage(request.BookCollectionSearchSettingsDto.Page,
                 request.BookCollectionSearchSettingsDto.Limit)
             .ToListAsync(cancellationToken);

@@ -48,6 +48,19 @@ public class BooksController(IMediator mediator) : ControllerBase
         var reviews = await mediator.Send(new GetReviewsQuery(reviewSearchSettingsDto, id, User.RetrieveUserId()), cancellationToken);
         return Ok(reviews);
     }
+
+    /// <summary>
+    /// Получить книги, похожие на данную
+    /// </summary>
+    [HttpGet]
+    [Route("{id:guid}/similar")]
+    public async Task<IActionResult> GetSimilar([FromRoute] Guid id,
+        [FromQuery] BookSimpleSearchSettingsDto bookSimpleSearchSettingsDto, CancellationToken cancellationToken)
+    {
+        var books = await mediator.Send(new GetSimilarBooksQuery(id, bookSimpleSearchSettingsDto,
+            User.RetrieveUserId()), cancellationToken);
+        return Ok(books);
+    }
     
     /// <summary>
     /// Добавить новую книгу
