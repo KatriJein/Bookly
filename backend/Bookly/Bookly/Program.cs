@@ -55,14 +55,8 @@ builder.Services.AddServices();
 builder.Services.AddMediatR(Assembly.GetExecutingAssembly());
 builder.Services.AddGenericMediatRHandlers();
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
