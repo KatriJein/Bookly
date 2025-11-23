@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookly", "Bookly\Bookly.csproj", "{234854DA-51E5-4694-AC23-DB88D50839CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docker-compose", "Docker-compose", "{01878AC5-F6F9-415B-B851-B82999605B2B}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.override.yml = docker-compose.override.yml
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{B8542C80-7013-46FF-9B9A-71AFDC49E984}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookly.Domain", "Bookly.Domain\Bookly.Domain.csproj", "{ACD5052B-A672-4DB1-A736-19DC3AC6B669}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookly.Infrastructure", "Bookly.Infrastructure\Bookly.Infrastructure.csproj", "{A34A09C4-82CB-4536-B198-1818606C19C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookly.Tests", "Bookly.Tests\Bookly.Tests.csproj", "{98B77CAB-AFF7-4443-8235-82FD40A4BC4A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{234854DA-51E5-4694-AC23-DB88D50839CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8542C80-7013-46FF-9B9A-71AFDC49E984}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8542C80-7013-46FF-9B9A-71AFDC49E984}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8542C80-7013-46FF-9B9A-71AFDC49E984}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8542C80-7013-46FF-9B9A-71AFDC49E984}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACD5052B-A672-4DB1-A736-19DC3AC6B669}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACD5052B-A672-4DB1-A736-19DC3AC6B669}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACD5052B-A672-4DB1-A736-19DC3AC6B669}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACD5052B-A672-4DB1-A736-19DC3AC6B669}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A34A09C4-82CB-4536-B198-1818606C19C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A34A09C4-82CB-4536-B198-1818606C19C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A34A09C4-82CB-4536-B198-1818606C19C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A34A09C4-82CB-4536-B198-1818606C19C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98B77CAB-AFF7-4443-8235-82FD40A4BC4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98B77CAB-AFF7-4443-8235-82FD40A4BC4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98B77CAB-AFF7-4443-8235-82FD40A4BC4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98B77CAB-AFF7-4443-8235-82FD40A4BC4A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
