@@ -1,0 +1,87 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to bottom, #0048a8, #1a1a2e);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 95vh;
+        width: calc(95vh * (1229 / 1080));
+        background-image: url('../../../assets/images/auth_left.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom left;
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        height: 95vh;
+        width: calc(95vh * (1146 / 1080));
+        background-image: url('../../../assets/images/auth_right.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom right;
+    }
+
+    .content {
+        z-index: 1;
+        width: 780px;
+        height: auto;
+        max-height: 90vh;
+        padding: 40px 60px;
+        background-color: white;
+        border-radius: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .button {
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-family: 'Stolzl';
+        font-size: 16px;
+        color: #e94560;
+        font-weight: 300;
+
+        .arrow {
+            width: 8px;
+            height: auto;
+        }
+
+        &:hover {
+            transform: translateY(-2px);
+        }
+    }
+
+    .children {
+        width: 550px;
+        margin: 0 auto;
+        overflow-y: auto; 
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+
+        scrollbar-width: none; 
+        -ms-overflow-style: none; 
+    }
+}

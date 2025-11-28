@@ -1,50 +1,99 @@
 import styles from './page-of-book.module.scss';
-import Cover from '../../assets/images/book.png';
+// import Cover from '../../assets/images/book.png';
 import Chat from './../../assets/svg/icon-chat.svg';
 import List from '../../assets/svg/list-check.svg';
-import {
-    BookRating,
-    ListPoint,
-    Comment,
-    ButtonAll,
-} from '../../components';
+import { BookRating, ListPoint, Comment, ButtonAll } from '../../components';
 import clsx from 'clsx';
+import { Helmet } from 'react-helmet-async';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import type { Book } from '../../types';
+import { getBookByIdApi } from '../../store/api/books';
 
 export function PageOfBook() {
+    const { id } = useParams<{ id: string }>();
+    const [book, setBook] = useState<Book | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchBook = async () => {
+            if (!id) {
+                setError('ID книги не указан');
+                setLoading(false);
+                return;
+            }
+
+            try {
+                setLoading(true);
+                setError(null);
+                const bookData = await getBookByIdApi(id);
+                setBook(bookData);
+            } catch (err) {
+                setError(
+                    err instanceof Error ? err.message : 'Произошла ошибка'
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchBook();
+    }, [id]);
+
+    if (loading) {
+        return <div className={styles.loading}>Загрузка книги...</div>;
+    }
+
+    if (error) {
+        return <div className={styles.error}>Ошибка: {error}</div>;
+    }
+
+    if (!book) {
+        return <div className={styles.error}>Книга не найдена</div>;
+    }
+
     return (
         <div className={styles.pageOfBook}>
+            <Helmet>
+                <title>{book.title}</title>
+            </Helmet>
             <div className={styles.content}>
-                <img src={Cover} alt='Cover' className={styles.cover} />
+                <img src={book.thumbnail} alt='Cover' className={styles.cover} />
                 <div className={styles.info}>
                     <div className={styles.description}>
-                        <h2 className={styles.title}>Жизнь взаймы</h2>
-                        <p className={styles.author}>Эрих Мария Ремарк</p>
+                        <h2 className={styles.title}>{book.title}</h2>
+                        <p className={styles.author}>
+                            {book.authors[0].displayName}
+                        </p>
                         <ListPoint
                             className={styles.list}
                             items={[
-                                '2025',
-                                'Издательство "Просвещение"',
-                                '500 стр.',
+                                String(book.publishmentYear),
+                                book.publisher,
+                                `${book.pageCount} стр.`,
                             ]}
                         />
                         <div className={styles.tags}>
-                            <span className={styles.age}>12+</span>
-                            <span className={clsx('genre')}>Классика</span>
+                            <span className={styles.age}>
+                                {book.ageRestriction}
+                            </span>
+                            {book.genres.map((genre) => (
+                                <span
+                                    key={genre.name}
+                                    className={clsx('genre')}
+                                >
+                                    {genre.displayName}
+                                </span>
+                            ))}
+                            {/* <span className={clsx('genre')}>Классика</span>
                             <span className={clsx('genre')}>Фантастика</span>
                             <span className={clsx('genre')}>Научпоп</span>
-                            <span className={clsx('genre')}>Драма</span>
+                            <span className={clsx('genre')}>Драма</span> */}
                         </div>
-                        <BookRating className={styles.rating} rating={3.2} />
+                        <BookRating className={styles.rating} rating={book.rating} />
                         <p className={styles.descriptionText}>
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги
-                            Описание книги Описание книги Описание книги{' '}
+                            {book.description}
                         </p>
                     </div>
                     <div className={styles.buttons}>

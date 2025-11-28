@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { useCallback } from 'react';
 import { CollectionsSmallList, EditButton } from '../../../components';
 import { Comment } from '../../../components';
+import { Helmet } from 'react-helmet-async';
 
 export function PersonalProfile() {
     const handleMenuClick = useCallback((sectionId: string) => {
@@ -18,6 +19,9 @@ export function PersonalProfile() {
 
     return (
         <div className={styles.personalProfile}>
+            <Helmet>
+                <title>Профиль</title>
+            </Helmet>
             <div className={styles.header}>
                 <PersonalInfo editable buttonColor='pink' />
                 <ul className={styles.menu}>
@@ -55,7 +59,10 @@ export function PersonalProfile() {
                         <li className={clsx('genre')}>Научпоп</li>
                         <li className={clsx('genre')}>Драма</li>
 
-                       <EditButton className={styles.edit}  onClick={() => {}} />
+                        <EditButton
+                            className={styles.edit}
+                            onClick={() => {}}
+                        />
                     </ul>
                 </div>
             </div>
@@ -71,37 +78,37 @@ export function PersonalProfile() {
                 <h3 className={styles.title}>Мои отзывы</h3>
                 <div className={styles.content}>
                     <ul className={styles.comments}>
-                         <Comment
-                        user={{
-                            avatar: '/path/to/avatar.jpg',
-                            name: 'Max Verstappen',
-                        }}
-                        date='06.11.2023'
-                        rating={4}
-                        editable
-                        text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
-                    />
+                        <Comment
+                            user={{
+                                avatar: '/path/to/avatar.jpg',
+                                name: 'Max Verstappen',
+                            }}
+                            date='06.11.2023'
+                            rating={4}
+                            editable
+                            text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
+                        />
 
-                    <Comment
-                        user={{
-                            avatar: '/path/to/avatar.jpg',
-                            name: 'John Doe',
-                        }}
-                        date='15.12.2023'
-                        rating={5}
-                        editable
-                        text='Отличная книга, рекомендую всем к прочтению!'
-                    />
-                    <Comment
-                        user={{
-                            avatar: '/path/to/avatar.jpg',
-                            name: 'Max Verstappen',
-                        }}
-                        date='06.11.2023'
-                        rating={3}
-                        editable
-                        text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
-                    />
+                        <Comment
+                            user={{
+                                avatar: '/path/to/avatar.jpg',
+                                name: 'John Doe',
+                            }}
+                            date='15.12.2023'
+                            rating={5}
+                            editable
+                            text='Отличная книга, рекомендую всем к прочтению!'
+                        />
+                        <Comment
+                            user={{
+                                avatar: '/path/to/avatar.jpg',
+                                name: 'Max Verstappen',
+                            }}
+                            date='06.11.2023'
+                            rating={3}
+                            editable
+                            text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
+                        />
                     </ul>
                 </div>
             </div>

@@ -1,13 +1,20 @@
+import type { ShortBook } from '../../../types';
 import { ButtonAll } from '../../uikit';
 import { Book } from '../book/book';
 import styles from './books-list.module.scss';
 
-interface Params {
+interface Props {
     title: string;
+    books: ShortBook[];
+    loading?: boolean;
+    error?: string | null;
 }
 
-export function BooksList(params: Params) {
-    const { title } = params;
+export function BooksList(props: Props) {
+    const { title, books = [], loading, error } = props;
+
+    if (loading) return <div>Загрузка...</div>;
+    if (error) return <div>Ошибка: {error}</div>;
 
     return (
         <div className={styles.books}>
@@ -16,14 +23,9 @@ export function BooksList(params: Params) {
                 <ButtonAll />
             </div>
             <ul className={styles.list}>
-                <Book />
-                <Book />
-                <Book />
-                <Book />
-                <Book />
-                <Book />
-                <Book />
-                <Book />
+                {books.map((book) => (
+                    <Book key={book.id} book={book} />
+                ))}
             </ul>
         </div>
     );
