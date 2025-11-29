@@ -5,6 +5,8 @@ using Bookly.Tests.Utils;
 using Core.Dto.Book;
 using Core.Dto.User;
 using Core.Enums;
+using MediatR;
+using Moq;
 
 namespace Bookly.Tests.Application.Handlers.Ratings;
 
@@ -12,11 +14,13 @@ namespace Bookly.Tests.Application.Handlers.Ratings;
 public class AddOrUpdateRatingHandlerTests
 {
     private BooklyDbContext _db = null!;
+    private IMediator _mediator = null!;
 
     [SetUp]
     public void Setup()
     {
         _db = DatabaseUtils.CreateDbContext();
+        _mediator = new Mock<IMediator>().Object;
     }
 
     [TearDown]
@@ -28,7 +32,7 @@ public class AddOrUpdateRatingHandlerTests
     [Test]
     public async Task Handle_ReturnsFailure_WhenUserDoesNotExist()
     {
-        var handler = new AddOrUpdateRatingHandler<Book>(_db);
+        var handler = new AddOrUpdateRatingHandler<Book>(_mediator, _db);
         var query = new AddOrUpdateRatingCommand<Book>(
             db => db.Books, Guid.NewGuid(), Guid.NewGuid(), 5);
 
@@ -46,7 +50,7 @@ public class AddOrUpdateRatingHandlerTests
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
-        var handler = new AddOrUpdateRatingHandler<Book>(_db);
+        var handler = new AddOrUpdateRatingHandler<Book>(_mediator, _db);
         var cmd = new AddOrUpdateRatingCommand<Book>(
             db => db.Books, Guid.NewGuid(), user.Id, 5);
 
@@ -69,7 +73,7 @@ public class AddOrUpdateRatingHandlerTests
         _db.Books.Add(book);
         await _db.SaveChangesAsync();
 
-        var handler = new AddOrUpdateRatingHandler<Book>(_db);
+        var handler = new AddOrUpdateRatingHandler<Book>(_mediator, _db);
         var cmd = new AddOrUpdateRatingCommand<Book>(
             db => db.Books, book.Id, user.Id, 5);
 
@@ -103,7 +107,7 @@ public class AddOrUpdateRatingHandlerTests
         book.AddNewRating(3);
         await _db.SaveChangesAsync();
 
-        var handler = new AddOrUpdateRatingHandler<Book>(_db);
+        var handler = new AddOrUpdateRatingHandler<Book>(_mediator, _db);
         var cmd = new AddOrUpdateRatingCommand<Book>(
             db => db.Books, book.Id, user.Id, 5);
 
@@ -142,7 +146,7 @@ public class AddOrUpdateRatingHandlerTests
         book.AddNewRating(5);
         await _db.SaveChangesAsync();
 
-        var handler = new AddOrUpdateRatingHandler<Book>(_db);
+        var handler = new AddOrUpdateRatingHandler<Book>(_mediator, _db);
         var cmd = new AddOrUpdateRatingCommand<Book>(
             db => db.Books, book.Id, user1.Id, 2);
 

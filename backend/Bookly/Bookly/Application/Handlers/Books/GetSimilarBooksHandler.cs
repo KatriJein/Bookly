@@ -63,7 +63,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
                 .ToListAsync(cancellationToken);
             suitableBooks.AddRange(foundBooks);
         }
-
+        suitableBooks = await mediator.Send(new ExcludeIrrelevantBooksCommand(suitableBooks, userId), cancellationToken);
         suitableBooks = suitableBooks.DistinctBy(b => b.Id)
             .Skip((bookSearchSettingsDto.Page - 1) * bookSearchSettingsDto.Limit)
             .Take(bookSearchSettingsDto.Limit)
@@ -72,7 +72,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
         await mediator.Send(new GetRatingQuery<Book>(suitableBooks, userId), cancellationToken);
         return suitableBooks;
     }
-
+    
     private void FillSimilarityWeight(SimilarityDto similarityDto, Book candidate)
     {
         var candidateAuthors = candidate.Authors.Select(a => a.Name).ToHashSet();

@@ -24,6 +24,6 @@ public static class UserMapper
 
     public static AuthResponseDto MapUserToAuthResponseDto(User user, string presignedUrl, string accessToken)
     {
-        return new AuthResponseDto(user.Id, user.Login.Value, user.Email.Value, presignedUrl, accessToken);
+        return new AuthResponseDto(user.Id, user.Login.Value, user.Email.Value, presignedUrl, accessToken, user.TookEntrySurvey);
     }
 }

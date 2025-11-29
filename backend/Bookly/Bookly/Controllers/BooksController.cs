@@ -1,5 +1,6 @@
 using Bookly.Application.Handlers.Books;
 using Bookly.Application.Handlers.Ratings;
+using Bookly.Application.Handlers.Recommendations;
 using Bookly.Application.Handlers.Reviews;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
@@ -47,6 +48,17 @@ public class BooksController(IMediator mediator) : ControllerBase
     {
         var reviews = await mediator.Send(new GetReviewsQuery(reviewSearchSettingsDto, id, User.RetrieveUserId()), cancellationToken);
         return Ok(reviews);
+    }
+
+    /// <summary>
+    /// Узнать, указывал ли пользователь свое мнение по рекомендации на данную книгу. Возвращает true для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("{id:guid}/recommendation-status")]
+    public async Task<IActionResult> HasRecommendationStatus([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(new HasRecommendationResponseQuery(id, User.RetrieveUserId()), cancellationToken);
+        return Ok(response);
     }
 
     /// <summary>

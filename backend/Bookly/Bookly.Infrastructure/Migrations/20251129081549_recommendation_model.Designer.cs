@@ -3,6 +3,7 @@ using System;
 using Bookly.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookly.Infrastructure.Migrations
 {
     [DbContext(typeof(BooklyDbContext))]
-    partial class BooklyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251129081549_recommendation_model")]
+    partial class recommendation_model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -342,7 +345,7 @@ namespace Bookly.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAuthorPreferences");
+                    b.ToTable("UserAuthorPreference");
                 });
 
             modelBuilder.Entity("Bookly.Domain.Models.UserGenrePreference", b =>
@@ -370,7 +373,7 @@ namespace Bookly.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGenrePreferences");
+                    b.ToTable("UserGenrePreference");
                 });
 
             modelBuilder.Entity("Bookly.Domain.Review", b =>

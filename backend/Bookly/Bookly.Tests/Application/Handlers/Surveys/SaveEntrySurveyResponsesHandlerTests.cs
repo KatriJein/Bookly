@@ -174,7 +174,7 @@ public class SaveEntrySurveyResponsesHandlerTests
         var genreId = Guid.NewGuid();
 
         var existingPref = UserGenrePreference.Create(
-            new UserPreferenceDto(user.Id, genreId, PreferenceType.Liked));
+            new UserPreferenceDto(user.Id, genreId, PreferenceType.Liked, null));
         user.AddGenrePreferences(new[] { existingPref });
         _db.Users.Add(user);
         await _db.SaveChangesAsync();

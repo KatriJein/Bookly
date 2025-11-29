@@ -35,6 +35,11 @@ public class GetSimilarBooksHandlerTests
         _mediatorMock
             .Setup(m => m.Send(It.IsAny<MarkFavoritesCommand>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => Unit.Value);
+        _mediatorMock
+            .Setup(m => m.Send(
+                It.IsAny<ExcludeIrrelevantBooksCommand>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((ExcludeIrrelevantBooksCommand cmd, CancellationToken _) => cmd.Books);
     }
 
     [TearDown]
