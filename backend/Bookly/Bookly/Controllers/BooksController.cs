@@ -73,6 +73,21 @@ public class BooksController(IMediator mediator) : ControllerBase
             User.RetrieveUserId()), cancellationToken);
         return Ok(books);
     }
+
+    /// <summary>
+    /// "Вам может понравиться". Возвращает ошибку 400 для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("you-may-like")]
+    public async Task<IActionResult> GetPossiblyLikedBooks([FromQuery] BookSimpleSearchSettingsDto bookSimpleSearchSettingsDto,
+        CancellationToken cancellationToken)
+    {
+        var booksResult = await mediator.Send(new GetPossiblyLikedBooksQuery(bookSimpleSearchSettingsDto, User.RetrieveUserId()),
+            cancellationToken);
+        return booksResult.IsSuccess
+            ? Ok(booksResult.Value)
+            : BadRequest(booksResult.Error);
+    }
     
     /// <summary>
     /// Добавить новую книгу

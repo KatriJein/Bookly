@@ -30,16 +30,10 @@ public class GetSimilarBooksHandlerTests
             .Setup(m => m.Send(It.IsAny<CalculateAverageRatingQuery<Book>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(4.0);
         _mediatorMock
-            .Setup(m => m.Send(It.IsAny<GetRatingQuery<Book>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => Unit.Value);
-        _mediatorMock
-            .Setup(m => m.Send(It.IsAny<MarkFavoritesCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => Unit.Value);
-        _mediatorMock
             .Setup(m => m.Send(
-                It.IsAny<ExcludeIrrelevantBooksCommand>(),
+                It.IsAny<ExcludeIrrelevantBooksAndEnrichRelevantWithDataCommand>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ExcludeIrrelevantBooksCommand cmd, CancellationToken _) => cmd.Books);
+            .ReturnsAsync((ExcludeIrrelevantBooksAndEnrichRelevantWithDataCommand cmd, CancellationToken _) => cmd.Books);
     }
 
     [TearDown]
@@ -80,7 +74,7 @@ public class GetSimilarBooksHandlerTests
         var handler = new GetSimilarBooksHandler(_mediatorMock.Object, _dbContext);
         var query = new GetSimilarBooksQuery(baseBook.Id, new BookSimpleSearchSettingsDto(1, 10));
         var result = await handler.Handle(query, CancellationToken.None);
-        var titlesByOrder = result.Select(x => x.Title).ToList();
+        var titlesByOrder = result.Select(x => x.Title).Distinct().ToList();
         Assert.That(titlesByOrder, Is.EqualTo(new string[] {"Similar1", "Similar3", "Similar2"}));
     }
 
@@ -105,7 +99,7 @@ public class GetSimilarBooksHandlerTests
         var handler = new GetSimilarBooksHandler(_mediatorMock.Object, _dbContext);
         var query = new GetSimilarBooksQuery(baseBook.Id, new BookSimpleSearchSettingsDto(1, 20));
         var result = await handler.Handle(query, CancellationToken.None);
-
+        result = result.DistinctBy(b => b.Id).ToList();
         Assert.That(result.Count, Is.EqualTo(10));
         var best = result.First();
         Assert.That(best.Language, Is.EqualTo("RU"));

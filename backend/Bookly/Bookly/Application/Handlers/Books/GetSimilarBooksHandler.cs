@@ -63,14 +63,9 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
                 .ToListAsync(cancellationToken);
             suitableBooks.AddRange(foundBooks);
         }
-        suitableBooks = await mediator.Send(new ExcludeIrrelevantBooksCommand(suitableBooks, userId), cancellationToken);
-        suitableBooks = suitableBooks.DistinctBy(b => b.Id)
-            .Skip((bookSearchSettingsDto.Page - 1) * bookSearchSettingsDto.Limit)
-            .Take(bookSearchSettingsDto.Limit)
-            .ToList();
-        await mediator.Send(new MarkFavoritesCommand(suitableBooks, userId), cancellationToken);
-        await mediator.Send(new GetRatingQuery<Book>(suitableBooks, userId), cancellationToken);
-        return suitableBooks;
+        var simpleBooksSearchDto = new BookSimpleSearchSettingsDto(bookSearchSettingsDto.Page, bookSearchSettingsDto.Limit);
+        return await mediator.Send(new ExcludeIrrelevantBooksAndEnrichRelevantWithDataCommand(suitableBooks, userId, simpleBooksSearchDto),
+            cancellationToken);
     }
     
     private void FillSimilarityWeight(SimilarityDto similarityDto, Book candidate)
