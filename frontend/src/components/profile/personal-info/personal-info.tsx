@@ -1,10 +1,19 @@
 import styles from './personal-info.module.scss';
-import { selectUser, useSelector } from '../../../store';
+import {
+    selectUser,
+    updateAvatar,
+    updateUser,
+    useDispatch,
+    useSelector,
+} from '../../../store';
 import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { InputText } from '../../auth';
 import DefaultUser from '../../../assets/images/default-user.png';
 import clsx from 'clsx';
 import { EditButton } from '../../uikit';
+import { toast } from 'react-toastify';
+import { Modal } from '../../modal';
+import { ChangePassword } from '../change-password';
 
 interface PersonalInfoProps {
     editable?: boolean;
@@ -20,15 +29,18 @@ export function PersonalInfo({
     editable = false,
     buttonText = 'Изменить пароль',
     buttonColor = 'blue',
-    onButtonClick,
+    // onButtonClick,
     isAuthor = false,
     authorText = 'Автор',
 }: PersonalInfoProps) {
     const currentUser = useSelector(selectUser);
+    const dispatch = useDispatch();
 
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(currentUser?.login || '');
     const [email, setEmail] = useState(currentUser?.email || '');
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,6 +48,7 @@ export function PersonalInfo({
         if (!isEditing) {
             setName(currentUser?.login || '');
             setEmail(currentUser?.email || '');
+            setAvatarFile(null);
             setAvatarPreview(null);
         }
     }, [isEditing, currentUser]);
@@ -43,8 +56,8 @@ export function PersonalInfo({
     if (!currentUser) {
         return null;
     }
-    const isEditableMode = editable && !isAuthor;
 
+    const isEditableMode = editable && !isAuthor;
     const avatarUrl = avatarPreview || currentUser.avatarUrl || DefaultUser;
 
     const handleEditClick = () => {
@@ -53,14 +66,33 @@ export function PersonalInfo({
         }
     };
 
-    const handleSave = () => {
-        console.log('Сохраняем профиль:', {
-            name,
-            email,
-            avatar: avatarPreview,
-        });
-        setIsEditing(false);
-        // TODO: вызвать API для обновления профиля
+    const handleSave = async () => {
+        try {
+            const profileChanges: { login?: string; email?: string } = {};
+            if (name !== currentUser.login) profileChanges.login = name;
+            if (email !== currentUser.email) profileChanges.email = email;
+
+            if (Object.keys(profileChanges).length > 0) {
+                await dispatch(
+                    updateUser({ userId: currentUser.id, data: profileChanges })
+                ).unwrap();
+            }
+
+            if (avatarFile) {
+                await dispatch(
+                    updateAvatar({ userId: currentUser.id, file: avatarFile })
+                ).unwrap();
+            }
+
+            toast.success('Профиль успешно обновлён');
+            setIsEditing(false);
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : 'Не удалось сохранить изменения';
+            toast.error(message);
+        }
     };
 
     const handleCancel = () => {
@@ -76,6 +108,7 @@ export function PersonalInfo({
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setAvatarFile(file);
             const url = URL.createObjectURL(file);
             setAvatarPreview(url);
         }
@@ -143,7 +176,7 @@ export function PersonalInfo({
                 {!isEditing && (
                     <button
                         className={clsx('button', buttonColor, styles.button)}
-                        onClick={onButtonClick}
+                        onClick={() => setIsPasswordModalOpen(true)}
                     >
                         {buttonText}
                     </button>
@@ -169,6 +202,17 @@ export function PersonalInfo({
 
             {!isEditing && editable && isEditableMode && (
                 <EditButton onClick={handleEditClick} className={styles.edit} />
+            )}
+            {isPasswordModalOpen && (
+                <Modal
+                    isOpen={isPasswordModalOpen}
+                    onClose={() => setIsPasswordModalOpen(false)}
+                    width={30}
+                >
+                    <ChangePassword
+                        onSuccess={() => setIsPasswordModalOpen(false)}
+                    />
+                </Modal>
             )}
         </div>
     );

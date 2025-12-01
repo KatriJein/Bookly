@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { loginApi, registerApi } from './api';
+import {
+    loginApi,
+    registerApi,
+    updateAvatarApi,
+    updatePasswordApi,
+    updateUserApi,
+    type TUpdatePasswordData,
+    type TUpdateUserData,
+} from './api';
 import type { User } from '../types';
 
 type TUserState = {
@@ -59,6 +67,62 @@ export const register = createAsyncThunk(
     }
 );
 
+export const updateUser = createAsyncThunk(
+    'user/updateUser',
+    async (
+        { userId, data }: { userId: string; data: TUpdateUserData },
+        { rejectWithValue }
+    ) => {
+        try {
+            await updateUserApi(userId, data);
+            return data;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue('Failed to update user info');
+        }
+    }
+);
+
+export const updatePassword = createAsyncThunk(
+    'user/updatePassword',
+    async (
+        { userId, data }: { userId: string; data: TUpdatePasswordData },
+        { rejectWithValue }
+    ) => {
+        try {
+            await updatePasswordApi(userId, data);
+
+            return { success: true };
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue('Failed to update password');
+        }
+    }
+);
+
+export const updateAvatar = createAsyncThunk(
+    'user/updateAvatar',
+    async (
+        { userId, file }: { userId: string; file: File },
+        { rejectWithValue }
+    ) => {
+        try {
+            const avatarUrl = await updateAvatarApi(userId, file);
+
+            return avatarUrl;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue('Failed to upload avatar');
+        }
+    }
+);
+
 // Slice
 export const userSlice = createSlice({
     name: 'user',
@@ -83,6 +147,7 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            // Авторизация
             .addCase(login.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -115,6 +180,52 @@ export const userSlice = createSlice({
                 state.error = action.payload as string;
                 state.isAuthenticated = false;
                 state.isAuthChecked = true;
+            })
+
+            // Обновление пользователя
+            .addCase(updateUser.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updateUser.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (state.user) {
+                    state.user.login = action.payload.login || state.user.login;
+                    state.user.email = action.payload.email || state.user.email;
+                }
+            })
+            .addCase(updateUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+            // Обновление пароля
+            .addCase(updatePassword.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updatePassword.fulfilled, (state) => {
+                state.isLoading = false;
+            })
+            .addCase(updatePassword.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
+            })
+
+            // Обновление аватарки
+            .addCase(updateAvatar.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(updateAvatar.fulfilled, (state, action) => {
+                state.isLoading = false;
+                if (state.user) {
+                    state.user.avatarUrl = action.payload;
+                }
+            })
+            .addCase(updateAvatar.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
             });
     },
 });

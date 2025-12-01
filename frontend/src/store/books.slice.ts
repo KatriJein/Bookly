@@ -19,20 +19,14 @@ const initialState: BooksState = {
 export const getRecommendedBooks = createAsyncThunk(
     'books/getRecommended',
     async (params: TBooksData) => {
-        const response = await getBooksApi(params);
-        console.log(response, 'response');
-       
-        return response;
+        return await getBooksApi(params);
     }
 );
 
 export const getInterestBooks = createAsyncThunk(
     'books/getInterest',
     async (params: TBooksData) => {
-        const response = await getBooksApi(params);
-        console.log(response, 'response');
-      
-        return response;
+        return await getBooksApi(params);
     }
 );
 

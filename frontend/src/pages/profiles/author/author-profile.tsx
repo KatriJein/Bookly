@@ -1,7 +1,7 @@
 import { PersonalInfo } from '../../../components/profile';
 import styles from './author-profile.module.scss';
 import clsx from 'clsx';
-import { Book } from '../../../components';
+// import { Book } from '../../../components';
 import { Helmet } from 'react-helmet-async';
 
 export function AuthorProfile() {
