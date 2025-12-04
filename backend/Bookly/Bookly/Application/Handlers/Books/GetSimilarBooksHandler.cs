@@ -72,10 +72,8 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
     {
         var candidateAuthors = candidate.Authors.Select(a => a.Name).ToHashSet();
         var candidateGenres = candidate.Genres.Select(a => a.Name).ToHashSet();
-        var overlapAuthorsCount = similarityDto.Authors.Intersect(candidateAuthors).Count();
-        var authorJaccard = (double)overlapAuthorsCount / (similarityDto.Authors.Count + candidateAuthors.Count - overlapAuthorsCount);
-        var overlapGenresCount = similarityDto.Genres.Intersect(candidateGenres).Count();
-        var genreJaccard = (double)overlapGenresCount / (similarityDto.Genres.Count + candidateGenres.Count - overlapGenresCount);
+        var authorJaccard = Utils.CalculateJaccard(candidateAuthors, similarityDto.Authors);
+        var genreJaccard = Utils.CalculateJaccard(candidateGenres, similarityDto.Genres);
         var candidateVolumeSize =  BookUtils.GetVolumeSizeDependingOnPagesCount(candidate.PageCount);
         candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByAuthor] * authorJaccard;
         candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByGenre] * genreJaccard;
