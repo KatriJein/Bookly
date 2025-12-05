@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using Core;
 using Core.Dto.User;
 using Core.Enums;

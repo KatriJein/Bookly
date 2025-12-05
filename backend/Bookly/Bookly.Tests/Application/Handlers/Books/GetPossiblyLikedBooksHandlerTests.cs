@@ -9,7 +9,9 @@ using Bookly.Application.Handlers.Recommendations;
 using Bookly.Domain.Models;
 using Bookly.Infrastructure;
 using Bookly.Tests.Utils;
+using Core.Data;
 using Core.Dto.Book;
+using Core.Dto.BookCollection;
 using Core.Dto.Genre;
 using Core.Dto.Preferences;
 using Core.Dto.User;
@@ -186,6 +188,96 @@ namespace Bookly.Tests.Application.Handlers.Books
 
             Assert.That(result.IsSuccess);
             Assert.That(result.Value.Count(b => b.Title == "Hybrid"), Is.EqualTo(1));
+        }
+        
+        [Test]
+        public async Task Handle_WhenSimilarUserExists_ReturnsBooksFromThatUser()
+        {
+            var genre3 = Genre.Create(new CreateGenreDto("history", "History")).Value;
+            await _dbContext.Genres.AddAsync(genre3);
+            await _dbContext.SaveChangesAsync();
+
+            // текущий пользователь: три нейтральных/любимых жанра
+            var baseUser = User.Create(new CreateUserDto("base", "b@b.com", "h")).Value;
+            await _dbContext.Users.AddAsync(baseUser);
+            _dbContext.UserGenrePreferences.AddRange(
+                UserGenrePreference.Create(new UserPreferenceDto(baseUser.Id, _genre1.Id, PreferenceType.Liked, 0.8)),
+                UserGenrePreference.Create(new UserPreferenceDto(baseUser.Id, _genre2.Id, PreferenceType.Neutral, 0)),
+                UserGenrePreference.Create(new UserPreferenceDto(baseUser.Id, genre3.Id, PreferenceType.Neutral, 0.1))
+            );
+
+            // похожий пользователь совпадает по sci-fi
+            var simUser = User.Create(new CreateUserDto("sim", "s@s.com", "h")).Value;
+            await _dbContext.Users.AddAsync(simUser);
+            _dbContext.UserGenrePreferences.AddRange(
+                UserGenrePreference.Create(new UserPreferenceDto(simUser.Id, _genre1.Id, PreferenceType.Liked, 1))
+            );
+
+            // непохожий пользователь, другой жанр
+            var diffUser = User.Create(new CreateUserDto("diff", "d@d.com", "h")).Value;
+            await _dbContext.Users.AddAsync(diffUser);
+            _dbContext.UserGenrePreferences.Add(
+                UserGenrePreference.Create(new UserPreferenceDto(diffUser.Id, genre3.Id, PreferenceType.Disliked, -0.8))
+            );
+
+            await _dbContext.SaveChangesAsync();
+
+            // похожий пользователь оценил sci-fi книгу
+            await _dbContext.Ratings.AddAsync(Rating.Create(simUser.Id, _book1.Id, 5).Value);
+            await _dbContext.SaveChangesAsync();
+
+            var query = new GetPossiblyLikedBooksQuery(new BookSimpleSearchSettingsDto(1, 10), baseUser.Id);
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.That(result.IsSuccess);
+            Assert.That(result.Value.Any(b => b.Title == _book1.Title));
+        }
+
+        [Test]
+        public async Task Handle_WhenNoSimilarUsers_FallsBackToGenreBased()
+        {
+            var user = User.Create(new CreateUserDto("alone", "a@a.com", "h")).Value;
+            await _dbContext.Users.AddAsync(user);
+            _dbContext.UserGenrePreferences.AddRange(
+                UserGenrePreference.Create(new UserPreferenceDto(user.Id, _genre1.Id, PreferenceType.Liked, 0.6)),
+                UserGenrePreference.Create(new UserPreferenceDto(user.Id, _genre2.Id, PreferenceType.Neutral, 0)),
+                UserGenrePreference.Create(new UserPreferenceDto(user.Id, _genre2.Id, PreferenceType.Neutral, 0.1))
+            );
+            await _dbContext.SaveChangesAsync();
+
+            var query = new GetPossiblyLikedBooksQuery(new BookSimpleSearchSettingsDto(1, 10), user.Id);
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.That(result.IsSuccess);
+            Assert.That(result.Value.Any());
+        }
+
+        [Test]
+        public async Task Handle_DoesNotTriggerSimilarity_WhenLessThanThreePreferences()
+        {
+            var user = User.Create(new CreateUserDto("two", "t@t.com", "h")).Value;
+            await _dbContext.Users.AddAsync(user);
+            _dbContext.UserGenrePreferences.AddRange(
+                UserGenrePreference.Create(new UserPreferenceDto(user.Id, _genre1.Id, PreferenceType.Liked, 0.8)),
+                UserGenrePreference.Create(new UserPreferenceDto(user.Id, _genre2.Id, PreferenceType.Liked, 0.8))
+            );
+            await _dbContext.SaveChangesAsync();
+
+            var sim = User.Create(new CreateUserDto("simtoo", "s@s.com", "h")).Value;
+            await _dbContext.Users.AddAsync(sim);
+            _dbContext.UserGenrePreferences.Add(
+                UserGenrePreference.Create(new UserPreferenceDto(sim.Id, _genre1.Id, PreferenceType.Liked, 1))
+            );
+            await _dbContext.SaveChangesAsync();
+
+            await _dbContext.Ratings.AddAsync(Rating.Create(sim.Id, _book1.Id, 5).Value);
+            await _dbContext.SaveChangesAsync();
+
+            var query = new GetPossiblyLikedBooksQuery(new BookSimpleSearchSettingsDto(1, 10), user.Id);
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            Assert.That(result.IsSuccess);
+            Assert.That(result.Value.Any());
         }
     }
 }

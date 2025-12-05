@@ -1,3 +1,5 @@
+using Core.Data;
+
 namespace Bookly.Application;
 
 public static class Utils
@@ -9,5 +11,10 @@ public static class Utils
         if (unionCount == 0) return 0;
         var intersectCount = first.Intersect(second).Count();
         return (double)intersectCount / unionCount;
+    }
+
+    public static double NormalizeSimilarity(double similarityScore, double maxScore)
+    {
+        return similarityScore / maxScore;
     }
 }

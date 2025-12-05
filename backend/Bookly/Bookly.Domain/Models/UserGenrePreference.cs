@@ -11,12 +11,14 @@ public class UserGenrePreference : Preference
 
     public static UserGenrePreference Create(UserPreferenceDto userPreferenceDto)
     {
-        return new UserGenrePreference()
+        var preference = new UserGenrePreference()
         {
             UserId = userPreferenceDto.UserId,
             GenreId = userPreferenceDto.EntityId,
             PreferenceType = userPreferenceDto.PreferenceType,
             Weight = userPreferenceDto.Weight ?? 0
         };
+        preference.UpdatePreferenceType();
+        return preference;
     }
 }

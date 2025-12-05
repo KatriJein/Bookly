@@ -22,8 +22,6 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
         if (book is null) return [];
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Collection(b => b.Genres).LoadAsync(cancellationToken);
-        var booksAverageRating = await mediator.Send(new CalculateAverageRatingQuery<Book>(booklyDbContext.Books),
-            cancellationToken);
         var authors = book.Authors.Select(a => a.Name).ToArray();
         var genres = book.Genres.Select(a => a.Name).ToArray();
         var volumeSize = BookUtils.GetVolumeSizeDependingOnPagesCount(book.PageCount);
@@ -36,8 +34,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
         foreach (var suitableBook in suitableBooks)
             FillSimilarityWeight(similarityDto, suitableBook);
         return suitableBooks
-            .OrderByDescending(b => b.SimilarityWeight)
-            .OrderThenByDescendingWeightedRatings(booksAverageRating)
+            .OrderBySimilarityWeightAndShuffle()
             .Select(BookMapper.MapBookToShortBookDto)
             .ToList();
     }
@@ -83,6 +80,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
             candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByAgeRestriction];
         if (candidateVolumeSize == similarityDto.VolumeSizePreference)
             candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByVolumeSize];
+        candidate.SimilarityWeight = Utils.NormalizeSimilarity(candidate.SimilarityWeight, SimilarityScores.MaxPossibleScoreForSimilarBooksHandler);
     }
 }
 
