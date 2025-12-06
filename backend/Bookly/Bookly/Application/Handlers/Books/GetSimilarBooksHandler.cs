@@ -16,6 +16,9 @@ namespace Bookly.Application.Handlers.Books;
 
 public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDbContext) : IRequestHandler<GetSimilarBooksQuery, List<GetShortBookDto>>
 {
+    public const double BestSimilarityFrom = 0.7;
+    public const double GoodSimilarityFrom = 0.4;
+    
     public async Task<List<GetShortBookDto>> Handle(GetSimilarBooksQuery request, CancellationToken cancellationToken)
     {
         var book = await booklyDbContext.Books.FirstOrDefaultAsync(b => b.Id == request.BookId, cancellationToken);
@@ -34,7 +37,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
         foreach (var suitableBook in suitableBooks)
             FillSimilarityWeight(similarityDto, suitableBook);
         return suitableBooks
-            .OrderBySimilarityWeightAndShuffle()
+            .OrderBySimilarityWeightAndShuffle(BestSimilarityFrom, GoodSimilarityFrom)
             .Select(BookMapper.MapBookToShortBookDto)
             .ToList();
     }

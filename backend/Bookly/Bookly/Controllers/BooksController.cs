@@ -88,6 +88,22 @@ public class BooksController(IMediator mediator) : ControllerBase
             ? Ok(booksResult.Value)
             : BadRequest(booksResult.Error);
     }
+
+    /// <summary>
+    /// "Книги в ваших интересах". Возвращает ошибку 400 для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("user-interests")]
+    public async Task<IActionResult> GetBooksInUserInterests(
+        [FromQuery] BookSimpleSearchSettingsDto bookSimpleSearchSettingsDto,
+        CancellationToken cancellationToken)
+    {
+        var booksResult = await mediator.Send(new GetUserInterestBooksQuery(bookSimpleSearchSettingsDto, User.RetrieveUserId()),
+            cancellationToken);
+        return booksResult.IsSuccess
+            ?  Ok(booksResult.Value)
+            : BadRequest(booksResult.Error);
+    }
     
     /// <summary>
     /// Добавить новую книгу
