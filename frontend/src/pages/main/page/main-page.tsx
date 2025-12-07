@@ -4,10 +4,12 @@ import styles from './main-page.module.scss';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { BooksList, CollectionsList, Search } from '../../../components';
 import {
+    fetchPopularCollections,
     getInterestBooks,
     getRecommendedBooks,
     selectBooksError,
     selectBooksLoading,
+    selectBooksPopularCollections,
     selectInterest,
     selectRecommended,
     useDispatch,
@@ -19,13 +21,15 @@ export function MainPage() {
     const dispatch = useDispatch();
     const recommendedBooks = useSelector(selectRecommended);
     const interestBooks = useSelector(selectInterest);
+    const popularCollections = useSelector(selectBooksPopularCollections); // 🔹 получаем популярные подборки
     const loading = useSelector(selectBooksLoading);
     const error = useSelector(selectBooksError);
 
-    useEffect(() => {
+      useEffect(() => {
         dispatch(getRecommendedBooks({ Page: 1, Limit: 10 }));
-
         dispatch(getInterestBooks({ Page: 2, Limit: 10 }));
+        // 🔹 Загружаем популярные подборки
+        dispatch(fetchPopularCollections());
     }, [dispatch]);
 
     return (
@@ -37,7 +41,10 @@ export function MainPage() {
             <MainBanner />
             <div className={styles.content}>
                 <Search />
-                <CollectionsList title='Популярные подборки' />
+                <CollectionsList
+                    title='Популярные подборки'
+                    collections={popularCollections}
+                />
                 <BooksList
                     title='Вам может понравиться'
                     books={recommendedBooks}

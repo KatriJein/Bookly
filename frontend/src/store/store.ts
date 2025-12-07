@@ -6,10 +6,12 @@ import {
 } from 'react-redux';
 import userReducer from './user.slice';
 import booksReducer from './books.slice';
+import booksCollectionsReducer from './books-collections.slice';
 
 export const rootReducer = combineReducers({
     user: userReducer,
     books: booksReducer,
+    booksCollections: booksCollectionsReducer,
 });
 
 const store = configureStore({

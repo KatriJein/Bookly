@@ -1,12 +1,28 @@
-import { PersonalInfo, Statistics } from '../../../components/profile';
+import {
+    CreateCollection,
+    PersonalInfo,
+    Statistics,
+} from '../../../components/profile';
 import styles from './personal-profile.module.scss';
 import clsx from 'clsx';
-import { useCallback } from 'react';
-import { CollectionsSmallList, EditButton } from '../../../components';
+import { useCallback, useEffect, useState } from 'react';
+import { CollectionsSmallList, EditButton, Modal } from '../../../components';
 import { Comment } from '../../../components';
 import { Helmet } from 'react-helmet-async';
+import {
+    fetchBooksCollections,
+    selectBooksCollections,
+    selectUser,
+    useDispatch,
+    useSelector,
+} from '../../../store';
 
 export function PersonalProfile() {
+    const dispatch = useDispatch();
+    const user = useSelector(selectUser);
+    const collections = useSelector(selectBooksCollections); // ← получаем подборки из store
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const handleMenuClick = useCallback((sectionId: string) => {
         const element = document.getElementById(sectionId);
         if (element) {
@@ -16,6 +32,15 @@ export function PersonalProfile() {
             });
         }
     }, []);
+
+    useEffect(() => {
+        if (user?.id) {
+            dispatch(fetchBooksCollections({ userId: user.id }));
+        }
+    }, [dispatch, user?.id]);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <div className={styles.personalProfile}>
@@ -68,9 +93,18 @@ export function PersonalProfile() {
             </div>
 
             <div id='collections' className={styles.container}>
-                <h3 className={styles.title}>Мои подборки</h3>
+                <div className={styles.containerCollection}>
+                    <h3 className={styles.title}>Мои подборки</h3>
+                    <button
+                        className={clsx('button', 'pink', styles.button)}
+                        onClick={openModal}
+                    >
+                        Добавить подборку
+                    </button>
+                </div>
+
                 <div className={styles.content}>
-                    <CollectionsSmallList />
+                   <CollectionsSmallList collections={collections} />
                 </div>
             </div>
 
@@ -112,6 +146,9 @@ export function PersonalProfile() {
                     </ul>
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={closeModal} width={30}>
+                <CreateCollection onSuccess={closeModal} />
+            </Modal>
         </div>
     );
 }
