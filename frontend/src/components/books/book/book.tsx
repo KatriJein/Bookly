@@ -1,5 +1,5 @@
 import styles from './book.module.scss';
-import Cover from '../../../assets/images/book.png';
+// import Cover from '../../../assets/images/book.png';
 import Star from '../../../assets/svg/star.svg';
 import Point from '../../../assets/svg/point.svg';
 import Menu from '../../../assets/svg/menu.svg';
@@ -7,8 +7,15 @@ import { HeartIcon, MenuPopUp } from '../../uikit';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import type { ShortBook } from '../../../types';
 
-export function Book() {
+type BookProps = {
+    className?: string;
+    book: ShortBook;
+};
+
+export function Book(props: BookProps) {
+    const { book } = props;
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
@@ -44,12 +51,12 @@ export function Book() {
     };
 
     const handleDetailsClick = () => {
-        navigate('/page');
+        navigate(`/book/${book.id}`);
     };
 
     return (
         <div className={styles.book}>
-            <img src={Cover} alt='Cover' className={styles.cover} />
+            <img src={book.thumbnail} alt='Cover' className={styles.cover} />
 
             <button className={styles.like}>
                 <HeartIcon
@@ -60,10 +67,12 @@ export function Book() {
 
             <div className={styles.info}>
                 <div className={styles.description}>
-                    <p className={styles.name}>451 градус по Фаренгейту</p>
-                    <p className={styles.author}>Джон Голсоурси</p>
+                    <p className={styles.name}>{book.title}</p>
+                    <p className={styles.author}>
+                        {book.authors[0].fullName}
+                    </p>
                     <div className={styles.year}>
-                        <span>2025</span>
+                        <span>{book.publishmentYear}</span>
                         <img src={Point} alt='Point' />
                         <div className={styles.rating}>
                             <img
@@ -71,12 +80,13 @@ export function Book() {
                                 alt='Star'
                                 className={styles.star}
                             />
-                            <span className={styles.value}>5,0</span>
+                            <span className={styles.value}>{book.rating}</span>
                         </div>
                     </div>
                     <ul className={styles.tags}>
-                        <li className={styles.tag}>Драма</li>
-                        <li className={styles.tag}>Фантастика</li>
+                        {book.genres.map((genre) => (
+                            <li className={styles.tag}>{genre.displayName}</li>
+                        ))}
                     </ul>
                 </div>
                 <div className={styles.more} ref={menuRef}>

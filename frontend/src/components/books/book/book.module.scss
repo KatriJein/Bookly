@@ -1,5 +1,7 @@
 .book {
     width: 100%;
+    height: auto;
+    justify-content: space-between;
     min-width: 150px;
     display: flex;
     flex-direction: column;
@@ -15,6 +17,7 @@
     }
 
     .cover {
+        aspect-ratio: 3/4;
         transition: all 0.3s ease;
     }
 
@@ -61,6 +64,7 @@
     }
 
     .info {
+        position: relative;
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
@@ -78,6 +82,7 @@
     .name {
         padding-bottom: 12px;
         font-weight: 400;
+        max-width: 90%;
     }
 
     .year {
@@ -131,12 +136,15 @@
     }
 
     .more {
+        position: absolute;
+        top: 0px;
+        right: -2px;
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         align-items: flex-end;
         gap: var(--20px);
-        position: relative;
+      
     }
 
     .popup {

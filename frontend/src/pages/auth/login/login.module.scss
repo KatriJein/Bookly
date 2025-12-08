@@ -1,0 +1,90 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-family: 'Stolzl';
+    gap: 28px;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+    text-align: center;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+
+    &::before,
+    &::after {
+        content: '';
+        flex: 1;
+        border-top: 1px solid #c5c5c5;
+        margin: 0 0.75rem;
+    }
+
+    .text {
+        font-size: 16px;
+        font-weight: 300;
+        color: #c5c5c5;
+        white-space: nowrap;
+        padding: 0 0.5rem;
+    }
+}
+
+.button {
+    width: 100%;
+    font-size: 16px;
+    font-weight: 300;
+    font-family: 'Stolzl';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+}
+
+.login {
+    color: white;
+    background-color: var(--main-blue) !important;
+
+    &:hover:not(:disabled) {
+        background-color: var(--blue-hover) !important;
+        box-shadow: 0 2px 8px rgba(0, 72, 168, 0.15);
+    }
+}
+
+.register {
+    color: var(--main-blue);
+    background-color: transparent;
+    border: 1px solid var(--main-blue) !important;
+
+    &:hover:not(:disabled) {
+        background-color: rgba(0, 72, 168, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 72, 168, 0.15);
+    }
+}
+
+.errorText {
+    color: var(--pink);
+}
+
+.link {
+    color: var(--main-blue);
+    text-decoration: underline;
+}

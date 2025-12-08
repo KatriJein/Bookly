@@ -3,33 +3,94 @@ import Cover from '../../../assets/images/collection-big.png';
 import MousePointer from '../../../assets/svg/mouse-pointer.svg';
 import Person from '../../../assets/images/person.jpg';
 import Star from '../../../assets/svg/star.svg';
+import { useNavigate } from 'react-router-dom';
+import type { BookCollection } from '../../../types';
 
-export function CollectionBig() {
+interface CollectionBigProps {
+    collection?: BookCollection; // ← опционально, чтобы можно было использовать без данных
+}
+
+export function CollectionBig({ collection }: CollectionBigProps) {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        if (collection) {
+            navigate(`/collection-page/${collection.id}`);
+        }
+    };
+
+    if (!collection) {
+        return (
+            <div className={styles.collection}>
+                <a href='#' className={styles.link}>
+                    <div className={styles.cover}>
+                        <img src={Cover} alt='Cover' className={styles.image} />
+                        <div className={styles.point}>
+                            <img
+                                src={MousePointer}
+                                alt='Mouse pointer'
+                                className={styles.icon}
+                            />
+                        </div>
+                    </div>
+                    <div className={styles.title}>
+                        <p className={styles.text}>Саморазвитие</p>
+                        <div className={styles.rating}>
+                            <img
+                                src={Star}
+                                alt='Star'
+                                className={styles.star}
+                            />
+                            <p className={styles.value}>5,0</p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href='#' className={styles.author}>
+                    <img src={Person} alt='Person' className={styles.avatar} />
+                    <p className={styles.name}>Max Verstappenov</p>
+                </a>
+            </div>
+        );
+    }
+
+    // Динамические данные
+    const coverUrl = collection.coverUrl || Cover;
+    const avatarUrl = collection.userInfo.avatarUrl || '/default-avatar.png';
+    const rating = collection.rating > 0 ? collection.rating.toFixed(1) : '–';
+    const isPublic = collection.isPublic;
+
     return (
         <div className={styles.collection}>
-            <a href='#' className={styles.link}>
+            <a onClick={handleClick} className={styles.link}>
                 <div className={styles.cover}>
-                    <img src={Cover} alt='Cover' className={styles.image} />
-                    <div className={styles.point}>
-                        <img
-                            src={MousePointer}
-                            alt='Mouse pointer'
-                            className={styles.icon}
-                        />
-                    </div>
+                    <img src={coverUrl} alt='Cover' className={styles.image} />
+                    {isPublic && (
+                        <div className={styles.point}>
+                            <img
+                                src={MousePointer}
+                                alt='Mouse pointer'
+                                className={styles.icon}
+                            />
+                        </div>
+                    )}
                 </div>
                 <div className={styles.title}>
-                    <p className={styles.text}>Саморазвитие</p>
+                    <p className={styles.text}>{collection.title}</p>
                     <div className={styles.rating}>
                         <img src={Star} alt='Star' className={styles.star} />
-                        <p className={styles.value}>5,0</p>
+                        <p className={styles.value}>{rating}</p>
                     </div>
                 </div>
             </a>
 
-            <a href='#' className={styles.author}>
-                <img src={Person} alt='Person' className={styles.avatar} />
-                <p className={styles.name}>Max Verstappenov</p>
+            <a href={`/profile/${collection.userId}`} className={styles.author}>
+                <img
+                    src={avatarUrl}
+                    alt={collection.userInfo.login}
+                    className={styles.avatar}
+                />
+                <p className={styles.name}>{collection.userInfo.login}</p>
             </a>
         </div>
     );

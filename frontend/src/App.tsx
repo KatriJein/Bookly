@@ -1,21 +1,80 @@
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.scss';
-import { MainPage, PageOfBook } from './pages';
+import {
+    AuthLayout,
+    CollectionPage,
+    LoginPage,
+    MainPage,
+    PageOfBook,
+    RegisterPage,
+} from './pages';
 import { Layout, LayoutMain } from './layout';
-import { PersonalProfile } from './pages/profiles';
+import { AuthorProfile, OtherProfile, PersonalProfile } from './pages/profiles';
+import { ToastContainer } from 'react-toastify';
+import { ProtectedRoute } from './utils';
 
 function App() {
-    return (
-        <Routes>
-            <Route path='/' element={<LayoutMain />}>
-                <Route index element={<MainPage />} />
-            </Route>
+    const location = useLocation();
+    // const dispatch = useDispatch();
 
-            <Route path='/' element={<Layout />}>
-                <Route path='/page' element={<PageOfBook />} />
-                <Route path='/profile' element={<PersonalProfile />} />
-            </Route>
-        </Routes>
+    return (
+        <>
+            <Routes location={location}>
+                <Route path='/' element={<LayoutMain />}>
+                    <Route index element={<MainPage />} />
+                </Route>
+
+                <Route path='/' element={<Layout />}>
+                    <Route path='/book/:id' element={<PageOfBook />} />
+                    <Route
+                        path='/profile'
+                        element={
+                            <ProtectedRoute>
+                                <PersonalProfile />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route path='/other-profile' element={<OtherProfile />} />
+                    <Route path='/author-profile' element={<AuthorProfile />} />
+                    <Route
+                        path='/collection-page'
+                        element={<CollectionPage />}
+                    />
+                </Route>
+
+                <Route
+                    path='/login'
+                    element={
+                        <ProtectedRoute onlyUnAuth>
+                            <AuthLayout>
+                                <LoginPage />
+                            </AuthLayout>
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path='/register'
+                    element={
+                        <ProtectedRoute onlyUnAuth>
+                            <AuthLayout>
+                                <RegisterPage />
+                            </AuthLayout>
+                        </ProtectedRoute>
+                    }
+                />
+            </Routes>
+            <ToastContainer
+                position='top-right'
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+        </>
     );
 }
 
