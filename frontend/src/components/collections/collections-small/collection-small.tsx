@@ -3,20 +3,31 @@ import Cover from '../../../assets/images/collection-big.png';
 import MousePointer from '../../../assets/svg/mouse-pointer.svg';
 import Star from '../../../assets/svg/star.svg';
 import { useNavigate } from 'react-router-dom';
+import type { BookCollection } from '../../../types';
 
-export function CollectionSmall() {
+interface CollectionSmallProps {
+    collection: BookCollection;
+}
+
+export function CollectionSmall({ collection }: CollectionSmallProps) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/collection-page`);
+        navigate(`/collection-page/${collection.id}`); // ← передаём ID
     };
+
+    const coverUrl = collection.coverUrl || Cover; // ← заглушка
+    const isPublic = collection.isPublic;
+    const rating = collection.rating > 0 ? collection.rating.toFixed(1) : '–';
 
     return (
         <div className={styles.collection}>
             <a onClick={handleClick} className={styles.link}>
                 <div className={styles.cover}>
-                    <img src={Cover} alt='Cover' className={styles.image} />
-                    <span className={styles.status}>Публичная</span>
+                    <img src={coverUrl} alt='Cover' className={styles.image} />
+                    {isPublic && (
+                        <span className={styles.status}>Публичная</span>
+                    )}
                     <div className={styles.point}>
                         <img
                             src={MousePointer}
@@ -25,19 +36,19 @@ export function CollectionSmall() {
                         />
                     </div>
                 </div>
-                <div className={styles.info}> 
+                <div className={styles.info}>
                     <div className={styles.title}>
-                        <p className={styles.text}>Саморазвитие</p>
+                        <p className={styles.text}>{collection.title}</p>
                         <div className={styles.rating}>
                             <img
                                 src={Star}
                                 alt='Star'
                                 className={styles.star}
                             />
-                            <p className={styles.value}>5,0</p>
+                            <p className={styles.value}>{rating}</p>
                         </div>
                     </div>
-                    <p className={styles.count}>20 книг</p>
+                    <p className={styles.count}>{collection.booksCount} книг</p>
                 </div>
             </a>
         </div>
