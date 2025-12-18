@@ -23,9 +23,10 @@ builder.Services.AddCors(setup =>
     setup.AddDefaultPolicy(config =>
     {
         config
-            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:5173")
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 builder.Services.AddJwtAuthenthication(builder.Configuration);
