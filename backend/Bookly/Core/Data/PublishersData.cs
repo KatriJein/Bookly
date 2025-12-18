@@ -33,7 +33,7 @@ public static class PublishersData
 
     public static string[] BestPublishersList =>
     [
-        "Litres",
+        "Литрес",
         "Eksmo",
         "Astrel",
         "МИФ",

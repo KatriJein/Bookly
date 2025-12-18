@@ -6,6 +6,7 @@ public enum BookSimilarityType
     ByAuthor,
     ByAgeRestriction,
     ByVolumeSize,
-    ByLanguage
+    ByLanguage,
+    ByReadBooks,
 }
 
