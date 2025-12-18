@@ -5,33 +5,46 @@ import clsx from 'clsx';
 interface SearchBarProps {
     placeholder?: string;
     onSearch?: (query: string) => void;
+    onFindClick?: () => void; // Новый пропс для обработки клика "Найти"
     className?: string;
 }
 
 export function SearchBar({
     placeholder = 'Поиск',
     onSearch,
+    onFindClick,
     className = '',
 }: SearchBarProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSearch?.(searchQuery);
-    };
+    // const handleSubmit = (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     onSearch?.(searchQuery);
+    // };
+
+    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setSearchQuery(e.target.value);
+    // };
+
+    // const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    //     if (e.key === 'Enter') {
+    //         handleSubmit(e);
+    //     }
+    // };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchQuery(e.target.value);
+        const value = e.target.value;
+        setSearchQuery(value);
+        onSearch?.(value);
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            handleSubmit(e);
-        }
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        onFindClick?.(); // Вызываем основной поиск
     };
 
     return (
-        <form
+         <form
             className={clsx(styles.searchBar, className)}
             onSubmit={handleSubmit}
         >
@@ -40,17 +53,17 @@ export function SearchBar({
                     type='text'
                     value={searchQuery}
                     onChange={handleInputChange}
-                    onKeyDown={handleKeyPress}
+                    // onKeyDown={handleKeyPress}
                     placeholder={placeholder}
                     className={styles.input}
                 />
-                <button
+                {/* <button
                     type='submit'
                     className={clsx(styles.searchButton, 'button', 'blue')}
-                    disabled={!searchQuery.trim()}
+              
                 >
                     Найти
-                </button>
+                </button> */}
             </div>
         </form>
     );

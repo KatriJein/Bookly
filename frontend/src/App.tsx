@@ -2,9 +2,12 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import './App.scss';
 import {
     AuthLayout,
+    BooksPage,
     CollectionPage,
+    FavoritesPage,
     LoginPage,
     MainPage,
+    MyCollectionsPage,
     PageOfBook,
     RegisterPage,
 } from './pages';
@@ -26,6 +29,7 @@ function App() {
 
                 <Route path='/' element={<Layout />}>
                     <Route path='/book/:id' element={<PageOfBook />} />
+                    <Route path='/books' element={<BooksPage />} />
                     <Route
                         path='/profile'
                         element={
@@ -37,9 +41,26 @@ function App() {
                     <Route path='/other-profile' element={<OtherProfile />} />
                     <Route path='/author-profile' element={<AuthorProfile />} />
                     <Route
-                        path='/collection-page'
+                        path='/collection-page/:id'
                         element={<CollectionPage />}
                     />
+                    <Route
+                        path='/my-collections'
+                        element={
+                            <ProtectedRoute>
+                                <MyCollectionsPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path='/favorites'
+                        element={
+                            <ProtectedRoute>
+                                <FavoritesPage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    {/* <Route path="/collection/:id" element={<CollectionPage />} /> */}
                 </Route>
 
                 <Route

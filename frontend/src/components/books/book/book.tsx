@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 import type { ShortBook } from '../../../types';
+import { addBookToStaticCollection, useDispatch } from '../../../store';
+import { toast } from 'react-toastify';
 
 type BookProps = {
     className?: string;
@@ -20,6 +22,7 @@ export function Book(props: BookProps) {
     const menuRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
@@ -54,11 +57,36 @@ export function Book(props: BookProps) {
         navigate(`/book/${book.id}`);
     };
 
+    const handleAddToCollection = (collectionName: string) => {
+        dispatch(
+            addBookToStaticCollection({
+                collectionName,
+                bookId: book.id,
+            })
+        );
+    };
+
+    const handleLikeClick = () => {
+        dispatch(
+            addBookToStaticCollection({
+                collectionName: 'Избранное',
+                bookId: book.id,
+            })
+        );
+
+        // Опционально: показать уведомление
+        toast.success('Книга добавлена в избранное!');
+    };
+
     return (
         <div className={styles.book}>
             <img src={book.thumbnail} alt='Cover' className={styles.cover} />
 
-            <button className={styles.like}>
+            <button
+                className={styles.like}
+                onClick={handleLikeClick}
+                aria-label='Добавить в избранное'
+            >
                 <HeartIcon
                     className={styles.icon}
                     strokeClassName={styles.stroke}
@@ -68,9 +96,7 @@ export function Book(props: BookProps) {
             <div className={styles.info}>
                 <div className={styles.description}>
                     <p className={styles.name}>{book.title}</p>
-                    <p className={styles.author}>
-                        {book.authors[0].fullName}
-                    </p>
+                    <p className={styles.author}>{book.authors[0].fullName}</p>
                     <div className={styles.year}>
                         <span>{book.publishmentYear}</span>
                         <img src={Point} alt='Point' />
@@ -80,7 +106,7 @@ export function Book(props: BookProps) {
                                 alt='Star'
                                 className={styles.star}
                             />
-                            <span className={styles.value}>{book.rating}</span>
+                            <span className={styles.value}>{book.rating.toFixed(1).replace('.', ',')}</span>
                         </div>
                     </div>
                     <ul className={styles.tags}>
@@ -103,6 +129,7 @@ export function Book(props: BookProps) {
                         <MenuPopUp
                             className={styles.popup}
                             onClose={closeMenu}
+                            onAddToCollection={handleAddToCollection}
                         />
                     )}
                 </div>

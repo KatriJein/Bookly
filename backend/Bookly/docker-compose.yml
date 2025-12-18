@@ -30,7 +30,7 @@ services:
     networks:
       - bookly_network
     volumes:
-      - bookly_postgres_volume:/var/lib/postgresql/data
+      - bookly_postgres_volume:/var/lib/postgresql
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

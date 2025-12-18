@@ -11,8 +11,10 @@ import { Comment } from '../../../components';
 import { Helmet } from 'react-helmet-async';
 import {
     fetchBooksCollections,
+    fetchUserReviews,
     selectBooksCollections,
     selectUser,
+    selectUserReviews,
     useDispatch,
     useSelector,
 } from '../../../store';
@@ -20,7 +22,8 @@ import {
 export function PersonalProfile() {
     const dispatch = useDispatch();
     const user = useSelector(selectUser);
-    const collections = useSelector(selectBooksCollections); // ← получаем подборки из store
+    const reviews = useSelector(selectUserReviews);
+    const collections = useSelector(selectBooksCollections);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleMenuClick = useCallback((sectionId: string) => {
@@ -36,6 +39,7 @@ export function PersonalProfile() {
     useEffect(() => {
         if (user?.id) {
             dispatch(fetchBooksCollections({ userId: user.id }));
+            dispatch(fetchUserReviews());
         }
     }, [dispatch, user?.id]);
 
@@ -104,7 +108,7 @@ export function PersonalProfile() {
                 </div>
 
                 <div className={styles.content}>
-                   <CollectionsSmallList collections={collections} />
+                    <CollectionsSmallList collections={collections} />
                 </div>
             </div>
 
@@ -112,37 +116,24 @@ export function PersonalProfile() {
                 <h3 className={styles.title}>Мои отзывы</h3>
                 <div className={styles.content}>
                     <ul className={styles.comments}>
-                        <Comment
-                            user={{
-                                avatar: '/path/to/avatar.jpg',
-                                name: 'Max Verstappen',
-                            }}
-                            date='06.11.2023'
-                            rating={4}
-                            editable
-                            text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
-                        />
-
-                        <Comment
-                            user={{
-                                avatar: '/path/to/avatar.jpg',
-                                name: 'John Doe',
-                            }}
-                            date='15.12.2023'
-                            rating={5}
-                            editable
-                            text='Отличная книга, рекомендую всем к прочтению!'
-                        />
-                        <Comment
-                            user={{
-                                avatar: '/path/to/avatar.jpg',
-                                name: 'Max Verstappen',
-                            }}
-                            date='06.11.2023'
-                            rating={3}
-                            editable
-                            text='Lorem ipsum dolor sit amet consectetur adipiscing elit suscipit tincidunt sociosqu conubia parturient montes torquent.'
-                        />
+                        {reviews.length > 0 ? (
+                            <ul>
+                                {reviews.map((review) => (
+                                    <Comment
+                                        user={{
+                                            avatar: review.userInfo.avatarUrl,
+                                            name: review.userInfo.login,
+                                        }}
+                                        date={review.createdAt}
+                                        rating={review.rating}
+                                        editable
+                                        text={review.text}
+                                    />
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>Пока нет отзывов.</p>
+                        )}
                     </ul>
                 </div>
             </div>

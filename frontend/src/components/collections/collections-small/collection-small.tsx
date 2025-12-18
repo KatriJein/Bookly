@@ -13,7 +13,7 @@ export function CollectionSmall({ collection }: CollectionSmallProps) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/collection-page/${collection.id}`); // ← передаём ID
+        navigate(`/collection-page/${collection.id}`, { state: { collection } });
     };
 
     const coverUrl = collection.coverUrl || Cover; // ← заглушка

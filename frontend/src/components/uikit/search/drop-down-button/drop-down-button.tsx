@@ -10,8 +10,8 @@ interface DropDownButtonProps {
     color: 'blue' | 'pink';
     listType: 'single' | 'multiple';
     items: string[] | { id: string; content: ReactNode; disabled?: boolean }[];
-    onApply?: (selected: unknown) => void;
-    initialSelection?: unknown;
+    onApply?: (selected: string | string[] | null) => void;
+    initialSelection?: string | string[] | null;
     applyText?: string;
     searchPlaceholder?: string;
     className?: string;
@@ -57,7 +57,7 @@ export function DropDownButton({
         setIsOpen(!isOpen);
     };
 
-    const handleApply = (selected: unknown) => {
+    const handleApply = (selected: string | string[] | null) => {
         onApply?.(selected);
         setIsOpen(false);
     };

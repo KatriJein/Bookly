@@ -1,5 +1,5 @@
 import styles from './comment.module.scss';
-import Person from '../../../assets/images/person.jpg';
+import DefaultUser from '../../../assets/images/default-user.png';
 import Star from '../../../assets/svg/star.svg';
 import StarGrey from '../../../assets/svg/star_grey.svg';
 import { EditButton } from '../../uikit';
@@ -27,7 +27,7 @@ export function Comment(props: CommentProps) {
             <div className={styles.header}>
                 <a href='#' className={styles.user}>
                     <img
-                        src={Person}
+                        src={user.avatar || DefaultUser}
                         alt='Фотография пользователя'
                         className={styles.avatar}
                     />

@@ -1,4 +1,7 @@
 import axios from 'axios';
+import type { Review } from '../../types';
+import qs from 'qs';
+import { getToken } from './books-collections';
 
 const apiUrl = 'http://localhost:8082/';
 
@@ -179,5 +182,33 @@ export const updateAvatarApi = async (
             throw new Error('Failed to upload avatar');
         }
         throw new Error('Unknown error occurred');
+    }
+};
+
+export const getUserReviewsApi = async (
+    page = 1,
+    limit = 10
+): Promise<Review[]> => {
+    try {
+        const response = await axios.get(`${apiUrl}api/users/reviews`, {
+            params: { Page: page, Limit: limit },
+            paramsSerializer: (params) =>
+                qs.stringify(params, { arrayFormat: 'repeat' }),
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${getToken()}`,
+            },
+            withCredentials: true, // Для передачи куки/токена
+        });
+
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(
+                error.response?.data?.message || 'Ошибка при получении отзывов'
+            );
+        }
+        throw new Error('Неизвестная ошибка');
     }
 };

@@ -5,9 +5,10 @@ import Person from '../../../assets/images/person.jpg';
 import Star from '../../../assets/svg/star.svg';
 import { useNavigate } from 'react-router-dom';
 import type { BookCollection } from '../../../types';
+import DefaultUser from '../../../assets/images/default-user.png';
 
 interface CollectionBigProps {
-    collection?: BookCollection; // ← опционально, чтобы можно было использовать без данных
+    collection?: BookCollection;
 }
 
 export function CollectionBig({ collection }: CollectionBigProps) {
@@ -15,7 +16,9 @@ export function CollectionBig({ collection }: CollectionBigProps) {
 
     const handleClick = () => {
         if (collection) {
-            navigate(`/collection-page/${collection.id}`);
+            navigate(`/collection-page/${collection.id}`, {
+                state: { collection },
+            });
         }
     };
 
@@ -56,7 +59,11 @@ export function CollectionBig({ collection }: CollectionBigProps) {
 
     // Динамические данные
     const coverUrl = collection.coverUrl || Cover;
-    const avatarUrl = collection.userInfo.avatarUrl || '/default-avatar.png';
+    const avatarUrl = collection.userInfo.avatarUrl
+        ? collection.userInfo.avatarUrl.startsWith('person')
+            ? `https://bookly-files-bucket.s3.yandexcloud.net/${collection.userInfo.avatarUrl}`
+            : collection.userInfo.avatarUrl
+        : DefaultUser;
     const rating = collection.rating > 0 ? collection.rating.toFixed(1) : '–';
     const isPublic = collection.isPublic;
 

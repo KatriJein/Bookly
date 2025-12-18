@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
+    getUserReviewsApi,
     loginApi,
     registerApi,
     updateAvatarApi,
@@ -8,10 +9,11 @@ import {
     type TUpdatePasswordData,
     type TUpdateUserData,
 } from './api';
-import type { User } from '../types';
+import type { Review, User } from '../types';
 
 type TUserState = {
     user: User | null;
+    reviews: Review[];
     error: string | null | undefined;
     isAuthenticated: boolean;
     isAuthChecked: boolean;
@@ -20,11 +22,27 @@ type TUserState = {
 
 const initialState: TUserState = {
     user: null,
+    reviews: [],
     error: null,
     isAuthenticated: false,
     isAuthChecked: false,
     isLoading: false,
 };
+
+export const fetchUserReviews = createAsyncThunk(
+    'user/fetchUserReviews',
+    async (_, { rejectWithValue }) => {
+        try {
+            const reviews = await getUserReviewsApi();
+            return reviews;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue('Failed to fetch user reviews');
+        }
+    }
+);
 
 // Async Thunks
 export const login = createAsyncThunk(
@@ -133,6 +151,7 @@ export const userSlice = createSlice({
         selectIsAuthChecked: (state) => state.isAuthChecked,
         selectUserError: (state) => state.error,
         selectUserLoading: (state) => state.isLoading,
+        selectUserReviews: (state) => state.reviews,
     },
     reducers: {
         logout: (state) => {
@@ -226,6 +245,20 @@ export const userSlice = createSlice({
             .addCase(updateAvatar.rejected, (state, action) => {
                 state.isLoading = false;
                 state.error = action.payload as string;
+            })
+
+            // Обработчик для fetchUserReviews
+            .addCase(fetchUserReviews.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(fetchUserReviews.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.reviews = action.payload; // Сохраняем отзывы
+            })
+            .addCase(fetchUserReviews.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload as string;
             });
     },
 });
@@ -236,6 +269,7 @@ export const {
     selectIsAuthChecked,
     selectUserError,
     selectUserLoading,
+    selectUserReviews,
 } = userSlice.selectors;
 
 export default userSlice.reducer;

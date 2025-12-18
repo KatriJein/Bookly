@@ -1,11 +1,16 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import type { BookCollection } from '../types';
+import {
+    createSlice,
+    createAsyncThunk,
+    createSelector,
+} from '@reduxjs/toolkit';
+import type { BookCollection, ShortBook } from '../types';
 import {
     addBookToDynamicCollectionApi,
     addBookToStaticCollectionApi,
     createBookCollectionApi,
     deleteBookCollectionApi,
     getBooksCollectionsApi,
+    getBooksInCollectionApi,
     getPopularCollectionsApi,
     removeBookFromDynamicCollectionApi,
     removeBookFromStaticCollectionApi,
@@ -20,6 +25,7 @@ type TBooksCollectionsState = {
     currentPage: number;
     totalPages: number;
     totalItems: number;
+    currentCollectionBooks: ShortBook[];
 };
 
 const initialState: TBooksCollectionsState = {
@@ -30,7 +36,23 @@ const initialState: TBooksCollectionsState = {
     currentPage: 1,
     totalPages: 1,
     totalItems: 0,
+    currentCollectionBooks: [],
 };
+
+export const fetchBooksInCollection = createAsyncThunk(
+    'booksCollections/fetchBooksInCollection',
+    async (collectionId: string, { rejectWithValue }) => {
+        try {
+            const books = await getBooksInCollectionApi(collectionId);
+            return books;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+            }
+            return rejectWithValue('Failed to fetch books in collection');
+        }
+    }
+);
 
 export const fetchBooksCollections = createAsyncThunk(
     'booksCollections/fetch',
@@ -225,6 +247,7 @@ export const booksCollectionsSlice = createSlice({
             totalPages: state.totalPages,
             totalItems: state.totalItems,
         }),
+        selectCurrentCollectionBooks: (state) => state.currentCollectionBooks,
     },
     reducers: {
         clearCollections: (state) => {
@@ -394,6 +417,18 @@ export const booksCollectionsSlice = createSlice({
             .addCase(fetchPopularCollections.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(fetchBooksInCollection.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchBooksInCollection.fulfilled, (state, action) => {
+                state.loading = false;
+                state.currentCollectionBooks = action.payload; // Сохраняем книги
+            })
+            .addCase(fetchBooksInCollection.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload as string;
             });
     },
 });
@@ -403,7 +438,19 @@ export const {
     selectBooksCollectionsLoading,
     selectBooksCollectionsError,
     selectBooksCollectionsPagination,
-    selectBooksPopularCollections
+    selectBooksPopularCollections,
+    selectCurrentCollectionBooks,
 } = booksCollectionsSlice.selectors;
+
+export const selectFavoriteCollection = createSelector(
+    [selectBooksCollections],
+    (collections) => {
+        return (
+            collections.find(
+                (collection) => collection.title === 'Избранное'
+            ) || null
+        );
+    }
+);
 
 export default booksCollectionsSlice.reducer;

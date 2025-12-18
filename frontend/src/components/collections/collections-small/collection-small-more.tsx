@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styles from './collection-small.module.scss';
 
 interface CollectionSmallMoreProps {
@@ -5,9 +6,15 @@ interface CollectionSmallMoreProps {
 }
 
 export function CollectionSmallMore({ count }: CollectionSmallMoreProps) {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate('/my-collections');
+    };
+
     return (
         <div className={styles.collection}>
-            <a href="#" className={styles.link}>
+            <a onClick={handleClick} className={styles.link}>
                 <div className={styles.coverMore}>
                     <div className={styles.blueBackground}></div>
                     <div className={styles.point}>

@@ -40,7 +40,7 @@ export function MainPage() {
 
             <MainBanner />
             <div className={styles.content}>
-                <Search />
+                
                 <CollectionsList
                     title='Популярные подборки'
                     collections={popularCollections}

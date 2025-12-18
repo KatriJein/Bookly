@@ -7,3 +7,4 @@ export * from './footer';
 export * from './header';
 export * from './modal';
 export * from './auth';
+export * from './create-review';

@@ -1,0 +1,104 @@
+// create-review.module.scss
+
+.reviewContainer {
+    border: 2px dashed #00f; /* Пунктирная рамка как на макете */
+    border-radius: 16px;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 100%;
+    color: #000;
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+
+        .userInfo {
+            display: flex;
+            align-items: center;
+            gap: var(--20px);
+
+            .avatar {
+                width: 70px;
+                height: 70px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 1px solid #333;
+            }
+
+            .userName {
+                font-size: 20px;
+                font-weight: 300;
+            }
+        }
+
+        .ratingStars {
+            display: flex;
+            gap: 4px;
+
+            .starButton {
+                background: none;
+                border: none;
+                cursor: pointer;
+                padding: 0;
+                line-height: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                .star {
+                    width: 40px;
+                    height: 40px;
+                    display: block;
+                }
+            }
+        }
+    }
+
+    .form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #b8b8b8;
+            border-radius: 12px;
+            background-color: #fff;
+            color: #000;
+            resize: vertical;
+            font-size: 16px;
+            outline: none;
+            font-family: inherit;
+            font-weight: 300;
+            &::placeholder {
+                color: #888;
+            }
+
+            &:focus {
+                border-color: #00f;
+                box-shadow: 0 0 0 2px rgba(0, 0, 255, 0.2);
+            }
+        }
+
+        .submitButton {
+            padding: 12px 24px;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            align-self: flex-start;
+            font-family: inherit;
+            z-index: 2;
+
+            &:disabled {
+                background: #8b8b8b;
+                cursor: not-allowed;
+                opacity: 0.7;
+                transform: none;
+                z-index: 2;
+            }
+        }
+    }
+}
