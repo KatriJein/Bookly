@@ -1,5 +1,6 @@
 using Bookly.Application.Handlers.Books;
 using Bookly.Application.Handlers.Ratings;
+using Bookly.Application.Handlers.Recommendations;
 using Bookly.Application.Handlers.Reviews;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
@@ -50,6 +51,17 @@ public class BooksController(IMediator mediator) : ControllerBase
     }
 
     /// <summary>
+    /// Узнать, указывал ли пользователь свое мнение по рекомендации на данную книгу. Возвращает true для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("{id:guid}/recommendation-status")]
+    public async Task<IActionResult> HasRecommendationStatus([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var response = await mediator.Send(new HasRecommendationResponseQuery(id, User.RetrieveUserId()), cancellationToken);
+        return Ok(response);
+    }
+
+    /// <summary>
     /// Получить книги, похожие на данную
     /// </summary>
     [HttpGet]
@@ -60,6 +72,37 @@ public class BooksController(IMediator mediator) : ControllerBase
         var books = await mediator.Send(new GetSimilarBooksQuery(id, bookSimpleSearchSettingsDto,
             User.RetrieveUserId()), cancellationToken);
         return Ok(books);
+    }
+
+    /// <summary>
+    /// "Вам может понравиться". Возвращает ошибку 400 для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("you-may-like")]
+    public async Task<IActionResult> GetPossiblyLikedBooks([FromQuery] BookSimpleSearchSettingsDto bookSimpleSearchSettingsDto,
+        CancellationToken cancellationToken)
+    {
+        var booksResult = await mediator.Send(new GetPossiblyLikedBooksQuery(bookSimpleSearchSettingsDto, User.RetrieveUserId()),
+            cancellationToken);
+        return booksResult.IsSuccess
+            ? Ok(booksResult.Value)
+            : BadRequest(booksResult.Error);
+    }
+
+    /// <summary>
+    /// "Книги в ваших интересах". Возвращает ошибку 400 для неавторизованного пользователя
+    /// </summary>
+    [HttpGet]
+    [Route("user-interests")]
+    public async Task<IActionResult> GetBooksInUserInterests(
+        [FromQuery] BookSimpleSearchSettingsDto bookSimpleSearchSettingsDto,
+        CancellationToken cancellationToken)
+    {
+        var booksResult = await mediator.Send(new GetUserInterestBooksQuery(bookSimpleSearchSettingsDto, User.RetrieveUserId()),
+            cancellationToken);
+        return booksResult.IsSuccess
+            ?  Ok(booksResult.Value)
+            : BadRequest(booksResult.Error);
     }
     
     /// <summary>

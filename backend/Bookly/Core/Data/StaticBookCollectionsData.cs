@@ -4,9 +4,14 @@ public static class StaticBookCollectionsData
 {
     public static string[] StaticBookCollectionsNames =>
     [
-        "Избранное",
-        "Хочу прочитать",
-        "Читаю",
-        "Прочитано"
+        Favorite,
+        WantToRead,
+        Reading,
+        Read
     ];
+
+    public const string Favorite = "Избранное";
+    public const string Reading = "Читаю";
+    public const string Read = "Прочитано";
+    public const string WantToRead = "Хочу прочитать";
 }

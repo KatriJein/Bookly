@@ -16,14 +16,15 @@ namespace Bookly.Application.Handlers.Books;
 
 public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDbContext) : IRequestHandler<GetSimilarBooksQuery, List<GetShortBookDto>>
 {
+    public const double BestSimilarityFrom = 0.7;
+    public const double GoodSimilarityFrom = 0.4;
+    
     public async Task<List<GetShortBookDto>> Handle(GetSimilarBooksQuery request, CancellationToken cancellationToken)
     {
         var book = await booklyDbContext.Books.FirstOrDefaultAsync(b => b.Id == request.BookId, cancellationToken);
         if (book is null) return [];
         await booklyDbContext.Entry(book).Collection(b => b.Authors).LoadAsync(cancellationToken);
         await booklyDbContext.Entry(book).Collection(b => b.Genres).LoadAsync(cancellationToken);
-        var booksAverageRating = await mediator.Send(new CalculateAverageRatingQuery<Book>(booklyDbContext.Books),
-            cancellationToken);
         var authors = book.Authors.Select(a => a.Name).ToArray();
         var genres = book.Genres.Select(a => a.Name).ToArray();
         var volumeSize = BookUtils.GetVolumeSizeDependingOnPagesCount(book.PageCount);
@@ -36,8 +37,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
         foreach (var suitableBook in suitableBooks)
             FillSimilarityWeight(similarityDto, suitableBook);
         return suitableBooks
-            .OrderByDescending(b => b.SimilarityWeight)
-            .OrderThenByDescendingWeightedRatings(booksAverageRating)
+            .OrderBySimilarityWeightAndShuffle(BestSimilarityFrom, GoodSimilarityFrom)
             .Select(BookMapper.MapBookToShortBookDto)
             .ToList();
     }
@@ -63,24 +63,17 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
                 .ToListAsync(cancellationToken);
             suitableBooks.AddRange(foundBooks);
         }
-
-        suitableBooks = suitableBooks.DistinctBy(b => b.Id)
-            .Skip((bookSearchSettingsDto.Page - 1) * bookSearchSettingsDto.Limit)
-            .Take(bookSearchSettingsDto.Limit)
-            .ToList();
-        await mediator.Send(new MarkFavoritesCommand(suitableBooks, userId), cancellationToken);
-        await mediator.Send(new GetRatingQuery<Book>(suitableBooks, userId), cancellationToken);
-        return suitableBooks;
+        var simpleBooksSearchDto = new BookSimpleSearchSettingsDto(bookSearchSettingsDto.Page, bookSearchSettingsDto.Limit);
+        return await mediator.Send(new ExcludeIrrelevantBooksAndEnrichRelevantWithDataCommand(suitableBooks, userId, simpleBooksSearchDto),
+            cancellationToken);
     }
-
+    
     private void FillSimilarityWeight(SimilarityDto similarityDto, Book candidate)
     {
         var candidateAuthors = candidate.Authors.Select(a => a.Name).ToHashSet();
         var candidateGenres = candidate.Genres.Select(a => a.Name).ToHashSet();
-        var overlapAuthorsCount = similarityDto.Authors.Intersect(candidateAuthors).Count();
-        var authorJaccard = (double)overlapAuthorsCount / (similarityDto.Authors.Count + candidateAuthors.Count - overlapAuthorsCount);
-        var overlapGenresCount = similarityDto.Genres.Intersect(candidateGenres).Count();
-        var genreJaccard = (double)overlapGenresCount / (similarityDto.Genres.Count + candidateGenres.Count - overlapGenresCount);
+        var authorJaccard = Utils.CalculateJaccard(candidateAuthors, similarityDto.Authors);
+        var genreJaccard = Utils.CalculateJaccard(candidateGenres, similarityDto.Genres);
         var candidateVolumeSize =  BookUtils.GetVolumeSizeDependingOnPagesCount(candidate.PageCount);
         candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByAuthor] * authorJaccard;
         candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByGenre] * genreJaccard;
@@ -90,6 +83,7 @@ public class GetSimilarBooksHandler(IMediator mediator, BooklyDbContext booklyDb
             candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByAgeRestriction];
         if (candidateVolumeSize == similarityDto.VolumeSizePreference)
             candidate.SimilarityWeight += SimilarityScores.Scores[BookSimilarityType.ByVolumeSize];
+        candidate.SimilarityWeight = Utils.NormalizeSimilarity(candidate.SimilarityWeight, SimilarityScores.MaxPossibleScoreForSimilarBooksHandler);
     }
 }
 

@@ -236,6 +236,28 @@ namespace Bookly.Infrastructure.Migrations
                     b.ToTable("Ratings");
                 });
 
+            modelBuilder.Entity("Bookly.Domain.Models.Recommendation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BookId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("RecommendationStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Recommendations");
+                });
+
             modelBuilder.Entity("Bookly.Domain.Models.ScrapingTaskState", b =>
                 {
                     b.Property<Guid>("Id")
@@ -277,9 +299,6 @@ namespace Bookly.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("HatedGenresStrictRestriction")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
@@ -314,13 +333,16 @@ namespace Bookly.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<double>("Weight")
+                        .HasColumnType("double precision");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAuthorPreference");
+                    b.ToTable("UserAuthorPreferences");
                 });
 
             modelBuilder.Entity("Bookly.Domain.Models.UserGenrePreference", b =>
@@ -339,13 +361,16 @@ namespace Bookly.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
+                    b.Property<double>("Weight")
+                        .HasColumnType("double precision");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GenreId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserGenrePreference");
+                    b.ToTable("UserGenrePreferences");
                 });
 
             modelBuilder.Entity("Bookly.Domain.Review", b =>
@@ -455,6 +480,15 @@ namespace Bookly.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Bookly.Domain.Models.Recommendation", b =>
+                {
+                    b.HasOne("Bookly.Domain.Models.User", null)
+                        .WithMany("Recommendations")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Bookly.Domain.Models.User", b =>
@@ -574,6 +608,8 @@ namespace Bookly.Infrastructure.Migrations
                     b.Navigation("BookCollections");
 
                     b.Navigation("Ratings");
+
+                    b.Navigation("Recommendations");
 
                     b.Navigation("Reviews");
 
