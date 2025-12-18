@@ -2,7 +2,7 @@ using Core.Enums;
 
 namespace Core.Dto.UserGenrePreference;
 
-public record UserPreferenceDto(Guid UserId, Guid EntityId, PreferenceType PreferenceType)
+public record UserPreferenceDto(Guid UserId, Guid EntityId, PreferenceType PreferenceType, double? Weight)
 {
     public virtual bool Equals(UserPreferenceDto? other)
     {

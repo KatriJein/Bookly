@@ -39,7 +39,7 @@ public class CreateBookCollectionHandlerTests
         var result = await handler.Handle(command, CancellationToken.None);
 
         Assert.That(result.IsSuccess);
-        Assert.That(result.Value, Is.Not.EqualTo(Guid.Empty));
+        Assert.That(result.Value.Id, Is.Not.EqualTo(Guid.Empty));
         Assert.That(_db.BookCollections.Count(), Is.EqualTo(1));
 
         var collection = _db.BookCollections.First();

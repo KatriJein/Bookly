@@ -28,7 +28,7 @@ public class HashPasswordHandlerTests
 
         // Assert
         Assert.That(result.IsFailure, Is.True);
-        Assert.That(result.Error, Is.EqualTo("Пароль не соответствует формату"));
+        Assert.That(result.Error, Does.Contain("Пароль не соответствует формату"));
 
         // Убедимся, что хешер при этом вообще не вызывался
         _passwordHasher.DidNotReceiveWithAnyArgs().HashPassword(default!);

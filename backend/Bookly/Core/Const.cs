@@ -14,4 +14,6 @@ public static class Const
     public const int ShortBookMaxPagesCount = 200;
     public const int MediumBookMaxPagesCount = 500;
     public const int LongBookMaxPagesCount = 800;
+
+    public const int AbsolutelyHatedGenreWeight = -1;
 }
