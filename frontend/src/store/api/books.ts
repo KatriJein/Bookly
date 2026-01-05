@@ -9,7 +9,7 @@ export type TBooksData = {
 
 export type TBooksResponse = ShortBook[];
 
-const apiUrl = 'http://localhost:8082/';
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8082/';
 
 // Получение списка книг
 export const getBooksApi = async (

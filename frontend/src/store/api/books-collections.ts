@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { BookCollection } from '../../types';
 
-const apiUrl = 'http://localhost:8082/';
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8082/';
 
 export const getBooksCollectionsApi = async (
     userId: string,

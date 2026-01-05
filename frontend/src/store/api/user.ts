@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const apiUrl = 'http://localhost:8082/';
+const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8082/';
 
 export type TLoginData = {
     login: string;
