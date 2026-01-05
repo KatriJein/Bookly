@@ -26,19 +26,6 @@ services:
       interval: 30s
       timeout: 3s
       retries: 3
-
-  frontend:
-    image: corruptedcore/booklyfrontend:latest
-    container_name: Frontend
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "5"
-    ports:
-      - "5173:80"
-    networks:
-      - bookly_network 
   
   bookly_postgres:
     image: postgres:latest
