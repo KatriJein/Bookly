@@ -86,11 +86,13 @@ public static class ServiceCollectionExtensions
     
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddInitializableSingleton<IImpulseSituationsService, ImpulseSituationsService>();
         services.AddScoped<IFilesService, CloudStorageFilesService>();
         services.AddScoped<IBooksApiScraperService, BooksApiScraperService>();
         services.AddHostedService<CreateHangfireJobsService>();
         services.AddHostedService<PublishersSeedService>();
         services.AddHostedService<GenresSeedService>();
+        services.AddHostedService<SingletonsInitializationService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddLoginChain();
         return services;
@@ -105,6 +107,17 @@ public static class ServiceCollectionExtensions
         services.AddTransient<IRequestHandler<CalculateAverageRatingQuery<Book>, double>, CalculateAverageRatingHandler<Book>>();
         services.AddTransient<IRequestHandler<CalculateAverageRatingQuery<BookCollection>, double>,
             CalculateAverageRatingHandler<BookCollection>>();
+        return services;
+    }
+
+    private static IServiceCollection AddInitializableSingleton<TInterface, TImplementation>(
+        this IServiceCollection services)
+        where TImplementation : class, TInterface, IInitializableSingleton
+        where TInterface : class
+    {
+        services.AddSingleton<TImplementation>();
+        services.AddSingleton<TInterface>(sp => sp.GetRequiredService<TImplementation>());
+        services.AddSingleton<IInitializableSingleton>(sp => sp.GetRequiredService<TImplementation>());
         return services;
     }
 

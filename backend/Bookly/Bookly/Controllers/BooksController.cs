@@ -5,6 +5,7 @@ using Bookly.Application.Handlers.Reviews;
 using Bookly.Domain.Models;
 using Bookly.Extensions;
 using Core.Dto.Book;
+using Core.Dto.ImpulseSituations;
 using Core.Dto.Rating;
 using Core.Dto.Review;
 using MediatR;
@@ -36,6 +37,17 @@ public class BooksController(IMediator mediator) : ControllerBase
     {
         var book = await mediator.Send(new GetBookQuery(id, User.RetrieveUserId()), cancellationToken);
         if (book == null) return NotFound();
+        return Ok(book);
+    }
+
+    /// <summary>
+    /// Эндпоинт для фичи "Книга-Импульс"
+    /// </summary>
+    [HttpGet]
+    [Route("impulse-pick")]
+    public async Task<IActionResult> GetImpulsePick([FromQuery] ImpulsePickDto impulsePickDto, CancellationToken cancellationToken)
+    {
+        var book = await mediator.Send(new ImpulsePickBookQuery(impulsePickDto, User.RetrieveUserId()), cancellationToken);
         return Ok(book);
     }
     
