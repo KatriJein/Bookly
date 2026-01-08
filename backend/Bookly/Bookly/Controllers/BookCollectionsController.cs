@@ -26,6 +26,18 @@ public class BookCollectionsController(IMediator mediator) : ControllerBase
             User.RetrieveUserId()), cancellationToken);
         return Ok(collections);
     }
+
+    /// <summary>
+    /// Получить всю информацию о коллекции вместе с книгами
+    /// </summary>
+    [HttpGet]
+    [Route("{id:guid}/full")]
+    public async Task<IActionResult> GetFull([FromRoute] Guid id, CancellationToken cancellationToken)
+    {
+        var collection = await mediator.Send(new GetBookCollectionQuery(id, User.RetrieveUserId()),  cancellationToken);
+        if (collection is null) return NotFound();
+        return Ok(collection);
+    }
     
     /// <summary>
     /// Получить все подборки пользователя, начиная со статичных
