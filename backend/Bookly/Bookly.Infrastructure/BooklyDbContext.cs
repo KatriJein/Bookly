@@ -18,6 +18,7 @@ public class BooklyDbContext(DbContextOptions<BooklyDbContext> options) : DbCont
     public DbSet<UserGenrePreference> UserGenrePreferences { get; set; }
     public DbSet<UserAuthorPreference> UserAuthorPreferences { get; set; }
     public DbSet<Recommendation> Recommendations { get; set; }
+    public DbSet<UserSubscription> UserSubscriptions { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

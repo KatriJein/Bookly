@@ -24,6 +24,7 @@ public class User : Entity<Guid>
     private readonly List<Rating> _ratings = [];
     private readonly List<Review> _reviews = [];
     private readonly List<Recommendation> _recommendations = [];
+    private readonly List<UserSubscription> _userSubscriptions = [];
     
     public IReadOnlyCollection<UserGenrePreference> UserGenrePreferences => _userGenrePreferences;
     public IReadOnlyCollection<UserAuthorPreference> UserAuthorPreferences => _userAuthorPreferences;
@@ -31,6 +32,7 @@ public class User : Entity<Guid>
     public IReadOnlyCollection<BookCollection> BookCollections => _booksCollections;
     public IReadOnlyCollection<Rating> Ratings => _ratings;
     public IReadOnlyCollection<Review> Reviews => _reviews;
+    public IReadOnlyCollection<UserSubscription> UserSubscriptions => _userSubscriptions;
 
     public static Result<User> Create(CreateUserDto createUserDto)
     {
